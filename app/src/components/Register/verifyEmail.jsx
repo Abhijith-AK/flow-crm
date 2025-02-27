@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { nextStep, prevStep } from "../../redux/slices/registerSlice";
 import { motion } from "framer-motion";
@@ -8,6 +8,14 @@ const VerifyEmail = () => {
     const { email } = useSelector((state) => state.register);
     const [code, setCode] = useState(["", "", "", "", "", ""]);
     const [resendDisabled, setResendDisabled] = useState(false);
+    const inputsRef = useRef([]);
+
+    // Auto-focus the first input on mount
+    useEffect(() => {
+        if (inputsRef.current[0]) {
+            inputsRef.current[0].focus();
+        }
+    }, []);
 
     // Handle OTP Input
     const handleChange = (index, value) => {
@@ -15,6 +23,17 @@ const VerifyEmail = () => {
             const newCode = [...code];
             newCode[index] = value;
             setCode(newCode);
+
+            if (value && index < code.length - 1) {
+                inputsRef.current[index + 1]?.focus();
+            }
+        }
+    };
+
+    // Handle Backspace and Move Back
+    const handleKeyDown = (index, e) => {
+        if (e.key === "Backspace" && !code[index] && index > 0) {
+            inputsRef.current[index - 1]?.focus();
         }
     };
 
@@ -23,6 +42,9 @@ const VerifyEmail = () => {
         setResendDisabled(true);
         setTimeout(() => setResendDisabled(false), 30000); // Re-enable in 30s
     };
+
+    // Check if all fields are filled
+    const isCodeComplete = code.every((digit) => digit !== "");
 
     return (
         <motion.div
@@ -58,10 +80,12 @@ const VerifyEmail = () => {
                 {code.map((digit, index) => (
                     <motion.input
                         key={index}
+                        ref={(el) => (inputsRef.current[index] = el)}
                         type="text"
                         value={digit}
                         maxLength="1"
                         onChange={(e) => handleChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
                         className="w-12 h-12 text-center text-lg font-semibold bg-gray-700 border border-gray-600 rounded-lg outline-none focus:border-blue-500"
                         whileFocus={{ scale: 1.1 }}
                         transition={{ type: "spring", stiffness: 300 }}
@@ -72,8 +96,12 @@ const VerifyEmail = () => {
             {/* Verify Button */}
             <motion.button
                 onClick={() => dispatch(nextStep())}
-                className="mt-6 w-full py-3 bg-blue-700 hover:bg-blue-800 text-lg font-medium rounded-lg"
-                whileHover={{ scale: 1.05 }}
+                disabled={!isCodeComplete}
+                className={`mt-6 w-full py-3 text-lg font-medium rounded-lg ${isCodeComplete
+                        ? "bg-blue-700 hover:bg-blue-800 text-white"
+                        : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                    }`}
+                whileHover={isCodeComplete ? { scale: 1.05 } : {}}
                 transition={{ duration: 0.2 }}
             >
                 Verify
@@ -83,7 +111,8 @@ const VerifyEmail = () => {
             <motion.button
                 onClick={handleResend}
                 disabled={resendDisabled}
-                className={`mt-3 text-sm ${resendDisabled ? "text-gray-500 cursor-not-allowed" : "text-blue-400 hover:underline"}`}
+                className={`mt-3 text-sm ${resendDisabled ? "text-gray-500 cursor-not-allowed" : "text-blue-400 hover:underline"
+                    }`}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
             >

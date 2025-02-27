@@ -14,7 +14,7 @@ const LandingFooter = () => {
                 <div>
                     <h4 className="text-xl font-semibold">Quick Links</h4>
                     <ul className="mt-3 space-y-2 text-gray-400">
-                        <li><a href="#home" className="hover:text-white">Home</a></li>
+                        <li><a href="#h" className="hover:text-white">Get Started</a></li>
                         <li><a href="#pricing" className="hover:text-white">Pricing</a></li>
                         <li><a href="#features" className="hover:text-white">Features</a></li>
                         <li><a href="#contact" className="hover:text-white">Contact</a></li>

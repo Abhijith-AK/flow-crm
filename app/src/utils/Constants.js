@@ -40,3 +40,99 @@ export const faqs = [
     { question: "Is my data secure with FlowCRM?", answer: "Yes, we prioritize security by using end-to-end encryption and secure cloud storage to keep your business data safe." },
     { question: "Do you offer customer support?", answer: "Yes, our support team is available 24/7 to assist you with any queries or issues you may have." }
 ];
+
+export const themes = [
+    {
+        name: "Corporate Blue",
+        background: "#E3E8EF", // Softer blue-gray instead of bright white
+        navbar: {
+            background: "#1E3A8A",
+            text: "#FFFFFF",
+            accent: "#2563EB",
+            links: {
+                background: "#233E94", // Slightly darker shade for contrast
+                hover: "#2563EB"
+            }
+        },
+        card: {
+            background: "#FFFFFF",
+            text: "#1E293B",
+            border: "#CBD5E1",
+            textColor: "#334155"
+        },
+        text: {
+            primary: "#1E293B",
+            secondary: "#64748B"
+        }
+    },
+    {
+        name: "Elegant Dark",
+        background: "#121417", // Darker background for better depth
+        navbar: {
+            background: "#1F2937",
+            text: "#FFFFFF",
+            accent: "#4F46E5",
+            links: {
+                background: "#2C3B55", // Darker shade for contrast
+                hover: "#4F46E5"
+            }
+        },
+        card: {
+            background: "#1C1E22", // Darker than navbar for distinction
+            text: "#FFFFFF",
+            border: "#4F46E5",
+            textColor: "#E5E7EB"
+        },
+        text: {
+            primary: "#FFFFFF",
+            secondary: "#D1D5DB"
+        }
+    },
+    {
+        name: "Neutral Gray",
+        background: "#E8ECEF", // Slight gray tint for card contrast
+        navbar: {
+            background: "#475569",
+            text: "#F8FAFC",
+            accent: "#2563EB",
+            links: {
+                background: "#5A6875", // Slight contrast for better readability
+                hover: "#2563EB"
+            }
+        },
+        card: {
+            background: "#FFFFFF",
+            text: "#1E293B",
+            border: "#D1D5DB",
+            textColor: "#334155"
+        },
+        text: {
+            primary: "#1E293B",
+            secondary: "#64748B"
+        }
+    },
+    {
+        name: "Modern Slate",
+        background: "#DADFE5", // Subtle slate gray for contrast
+        navbar: {
+            background: "#334155",
+            text: "#FFFFFF",
+            accent: "#64748B",
+            links: {
+                background: "#3F4E64", // Muted slate tone for balance
+                hover: "#64748B"
+            }
+        },
+        card: {
+            background: "#F4F6F9", // Softer than pure white for distinction
+            text: "#1E293B",
+            border: "#B0B7C3",
+            textColor: "#334155"
+        },
+        text: {
+            primary: "#1E293B",
+            secondary: "#64748B"
+        }
+    }
+];
+

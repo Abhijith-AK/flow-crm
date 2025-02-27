@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { nextStep } from "../../redux/slices/registerSlice";
+import { nextStep, setUserInfo } from "../../redux/slices/registerSlice";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -9,6 +9,14 @@ const SetPassword = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+
+    const handleNext = () => {
+        if (password) {
+            console.log(password)
+            dispatch(setUserInfo({password: password}))
+            dispatch(nextStep())
+        }
+    }
 
     return (
         <motion.div
@@ -34,7 +42,7 @@ const SetPassword = () => {
                 transition={{ duration: 0.6, delay: 0.4 }}
             >
                 <input
-                    type={ "password"}
+                    type={"password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
@@ -67,7 +75,7 @@ const SetPassword = () => {
 
             {/* Confirm Button */}
             <motion.button
-                onClick={() => dispatch(nextStep())}
+                onClick={handleNext}
                 disabled={!password || password !== confirmPassword}
                 className={`mt-6 w-full py-3 text-lg font-medium rounded-lg 
                 ${password && password === confirmPassword ? "bg-blue-700 hover:bg-blue-800" : "bg-gray-600 cursor-not-allowed"}`}
