@@ -1,6 +1,19 @@
 const users = require("../models/userModel")
 const bcrypt = require("bcrypt")
 
+// verify email
+exports.registerVerifyEmailController = async (req, res) => {
+    const {email} =req.body
+    try {
+        const existingUser = await users.findOne({ email });
+        if (existingUser) return res.status(401).json("User already Exists!! Try another email address or Go to Login!")
+        res.status(200).json("Not an existing user proceed")
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside registerVerifyUserController", error)
+    }
+}
+
 // register user
 exports.registerUserController = async (req, res) => {
     const { name, email, password } = req.body
@@ -25,11 +38,11 @@ exports.registerUserController = async (req, res) => {
 exports.updateManagerCrmController = async (req, res) => {
     const { crmId, managerId } = req.body
     try {
-        const manager = users.findOne({_id:managerId})
+        const manager = await users.findOne({_id:managerId})
         manager.crmId = crmId
-        const updateManager = await users.findByIdAndUpdate(managerId, manager);
+        const updateManager = await users.findByIdAndUpdate(managerId, { crmId }, {new: true});
         if (updateManager) {
-            await updateManager.save()
+            console.log(updateManager)
             res.status(201).json(updateManager)
         }
     } catch (error) {

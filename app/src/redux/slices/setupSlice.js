@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 const initialState = {
     name: "",
     type: "",
-    workflow: [],
+    workflow: ["Lead", "Contacted", "Proposal Sent", "Negotiation", "Closed"],
     layout: "",
     theme: "",
     step: 1

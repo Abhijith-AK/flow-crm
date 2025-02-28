@@ -7,9 +7,10 @@ import { ArrowDown, Plus, Undo2Icon, Edit, X } from "lucide-react";
 
 const CustomWorkflow = () => {
   const dispatch = useDispatch();
+  const { workflow: workflow2 } = useSelector((state) => state.setup)
   const [stage, setStage] = useState("");
   const [editStage, setEditStage] = useState({ index: null, name: "" });
-  const [workflow, setWorkflow] = useState(["Lead", "Contacted", "Proposal Sent", "Negotiation", "Closed"]);
+  const [workflow, setWorkflow] = useState(workflow2);
   const defaultWorkflow = ["Lead", "Contacted", "Proposal Sent", "Negotiation", "Closed"];
 
   // Handle Drag & Drop Reordering

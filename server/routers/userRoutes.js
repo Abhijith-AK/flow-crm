@@ -4,6 +4,8 @@ const crmController = require("../controllers/crmController")
 
 const userRouter = new express.Router()
 
+// verify email
+userRouter.post("/verify", userController.registerVerifyEmailController)
 // register manager
 userRouter.post("/register", userController.registerUserController)
 // create crm
