@@ -3,11 +3,12 @@ import { Computer, DollarSign, GraduationCap, Hospital, ShoppingBag } from "luci
 import { useDispatch, useSelector } from "react-redux";
 import { nextSetupStep, setName, setType } from "../../../redux/slices/setupSlice";
 import { useState } from "react";
-
+import { formValidator } from "../../../utils/FormValidator";
 
 const BusinessType = () => {
   const { type, name } = useSelector((state) => state.setup);
   const dispatch = useDispatch();
+  const [error, setError] = useState("");
 
   const businessTypes = [
     { name: "Retail", icon: <ShoppingBag size={50} /> },
@@ -16,6 +17,13 @@ const BusinessType = () => {
     { name: "Finance", icon: <DollarSign size={50} /> },
     { name: "Education", icon: <GraduationCap size={50} /> },
   ];
+
+  const handleNameChange = (e) => {
+    const value = e.target.value;
+    const validation = formValidator("name", value);
+    setError(validation.message);
+    dispatch(setName(value));
+  };
 
   return (
     <motion.div
@@ -28,15 +36,18 @@ const BusinessType = () => {
       <h2 className="my-2 md:text-4xl text-center">To create your own platform.</h2>
 
       {/* Business Name Input */}
-      <div className="my-10 w-[90%] md:text-2xl flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-7 justify-center">
-        <p>Company Name:</p>
-        <input
-          type="text"
-          placeholder="Enter your company name"
-          value={name}
-          onChange={(e) => dispatch(setName(e.target.value))}
-          className="input input-bordered w-full max-w-xs bg-white text-black px-3 py-2 rounded"
-        />
+      <div className="my-10 w-[90%] md:text-2xl">
+        <div className="w-full flex flex-wrap md:flex-nowrap items-center gap-4 md:gap-7 justify-center">
+          <p>Company Name:</p>
+          <input
+            type="text"
+            placeholder="Enter your company name"
+            value={name}
+            onChange={handleNameChange}
+            className="input input-bordered w-full max-w-xs bg-white text-black px-3 py-2 rounded-lg"
+          />
+        </div>
+          {error && <p className="text-yellow-300 text-sm mt-1 text-center font-bold">*{error}</p>}
       </div>
 
       {/* Step Title */}
@@ -60,11 +71,11 @@ const BusinessType = () => {
       </div>
 
       {/* Next Button */}
-      <div className="w-full flex justify-end mt-10">
+      <div className="flex justify-end mt-10">
         <button
           onClick={() => dispatch(nextSetupStep())}
-          disabled={!type} 
-          className={`btn text-2xl px-4 py-2 border-none shadow-xl text-white transition-all ${type && name ? "bg-blue-500 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"
+          disabled={!type || !name || error}
+          className={`btn text-2xl px-4 py-2 border-none shadow-xl text-white transition-all ${type && name && !error ? "bg-blue-500 hover:bg-blue-700" : "bg-gray-500 cursor-not-allowed"
             }`}
         >
           Next

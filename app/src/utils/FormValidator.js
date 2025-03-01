@@ -19,6 +19,11 @@ export const formValidator = (type, value) => {
                 ? { validation: true, message: "" }
                 : { validation: false, message: "Invalid phone number (10 digits required)" };
 
+        case "name":
+            return /^[A-Za-z\s]+$/.test(value) && value.length >= 3
+                ? { validation: true, message: "" }
+                : { validation: false, message: "Name must be at least 3 characters and contain only alphabets" };
+
         default:
             return { validation: true, message: "" }; // No validation needed for other fields
     }
