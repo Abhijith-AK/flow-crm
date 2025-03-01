@@ -14,7 +14,7 @@ const SidebarItem = ({ Icon, label, path }) => {
 
 const Sidebar = ({ open, setOpen}) => {
   return (
-    <aside className={`flex flex-col justify-between h-screen fixed top-0 left-0 bg-gradient-to-tr from-blue-500 to-blue-800 text-white  ${open ? 'w-64' : 'w-20'}`}>
+    <aside className={`flex flex-col justify-between h-screen fixed z-10 top-0 left-0 bg-gradient-to-tr from-blue-500 to-blue-800 text-white  ${open ? 'w-64' : 'w-20'}`}>
       <div className="p-3 my-3 flex justify-between items-center border-b">
         {open && <h1 className="text-3xl">FlowCRM Admin</h1>}
         <button className="p-3 border rounded bg-blue-800 text-white" onClick={() => setOpen(!open)}>
