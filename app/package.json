@@ -10,11 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.0",
     "@hello-pangea/dnd": "^18.0.1",
-    "@mui/material": "^6.4.6",
-    "@mui/x-data-grid": "^7.27.2",
     "@reduxjs/toolkit": "^2.5.1",
     "axios": "^1.8.1",
     "framer-motion": "^12.4.7",
