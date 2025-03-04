@@ -13,7 +13,7 @@ const Admin = () => {
   }, []);
 
   return (
-    <div className={`flex bg-blue-800 ${open ? 'md:ml-64' : 'md:ml-20'}`}>
+    <div className={`flex bg-blue-800 ${open ? 'ml-20 md:ml-64' : 'ml-20'}`}>
       <SidebarAdmin open={open} setOpen={setOpen} />
       <div className="flex-1 w-full">
         <Outlet />

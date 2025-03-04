@@ -5,10 +5,10 @@ const StatCard = ({ bgColor, Icon, color, title, content }) => {
         <div style={{
             color,
             backgroundColor: bgColor
-        }} className='card px-4 m-2'>
+        }} className='card md:px-4 m-2'>
             <div className="card-body">
-                <h2 className='card-title text-2xl'><Icon size={40} /> { title }</h2>
-                <p className='text-5xl font-bold mt-3 text-center'> { content }</p>
+                <h2 className='card-title text-xl lg:text-2xl'><Icon  /> { title }</h2>
+                <p className='text-3xl lg:text-5xl font-bold mt-3 text-center'> { content }</p>
             </div>
         </div>
     )

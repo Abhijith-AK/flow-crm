@@ -11,6 +11,13 @@ import AdminDashboard from './components/Admin/AdminDashboard'
 import CrmManagement from './components/Admin/crmManagement'
 import Payments from './components/Admin/Payments'
 import Complaints from './components/Admin/Complaints'
+import CrmView from './components/Admin/CrmView'
+import ManagerDasboard from './components/Manager/ManagerDasboard'
+import ManagerLeads from './components/Manager/ManagerLeads'
+import ManagerEmployees from './components/Manager/ManagerEmployees'
+import ManagerTasks from './components/Manager/ManagerTasks'
+import ManagerSettings from './components/Manager/ManagerSettings'
+import ManagerChat from './components/Manager/ManagerChat'
 
 const App = () => {
   return (
@@ -22,15 +29,21 @@ const App = () => {
       <Route path='/admin' element={<Admin />}>
         <Route index element={<AdminDashboard />} />
         <Route path='crm' element={<CrmManagement />} />
+        <Route path='crm/:id' element={<CrmView />} />
         <Route path='bills' element={<Payments />} />
         <Route path='requests' element={<Complaints />} />
       </Route>
       {/* MANAGER */}
-      <Route path='/manager' element={<Manager />}>
-
+      <Route path='/crm/:id/manager' element={<Manager />}>
+        <Route index element={<ManagerDasboard />} />
+        <Route path='leads' element={<ManagerLeads />} />
+        <Route path='team' element={<ManagerEmployees />} />
+        <Route path='tasks' element={<ManagerTasks />} />
+        <Route path='settings' element={<ManagerSettings />} />
+        <Route path='chat' element={<ManagerChat />} />
       </Route>
       {/* EMPLOYEE */}
-      <Route path='/employee' element={<Employee />}>
+      <Route path='/crm/:id/employee' element={<Employee />}>
 
       </Route>
       <Route path='*' element={<Pnf />} />

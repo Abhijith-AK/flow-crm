@@ -16,3 +16,17 @@ exports.createCrmController = async (req, res) => {
         console.log("Error inside createCrmController", error)
     }
 }
+
+// get CRM
+exports.getCrmController = async (req, res) => {
+    const { id } = req.params
+    if (!id) return res.status(406).json("Invalid Request!!")
+    try {
+        const crmDetails = await crm.findById(id)
+        if (!crmDetails) return res.status(406).json("Invalid Request!!")
+        res.status(200).json(crmDetails)
+    } catch (error) {
+        res.status(500).json("Unauthorized")
+        console.log("Error inside getCrmController", error)
+    }
+}

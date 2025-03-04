@@ -12,5 +12,7 @@ userRouter.post("/register", userController.registerUserController)
 userRouter.post("/create", crmController.createCrmController)
 // assign crm
 userRouter.put("/assign", userController.updateManagerCrmController)
+// login
+userRouter.post("/login", userController.loginUserController);
 
 module.exports = userRouter

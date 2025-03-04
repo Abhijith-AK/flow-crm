@@ -27,9 +27,9 @@ const Sidebar = ({ open, setOpen}) => {
         <SidebarItem Icon={ReceiptIndianRupee} path="/admin/bills" label={open ? "Payments / Bills" : ""} />
         <SidebarItem Icon={ClipboardList} path="/admin/requests" label={open ? "Complaints / Requests" : ""} />
       </div>
-      <div className="p-3 m-2 text-2xl flex gap-5 items-center font-bold bg-red-400 rounded-lg hover:bg-red-500 cursor-pointer">
+      <Link to={'/login'} className="p-3 m-2 text-2xl flex gap-5 items-center font-bold bg-red-400 rounded-lg hover:bg-red-500 cursor-pointer">
         <LogOut size={40} /> {open && "Logout"}
-      </div>
+      </Link>
     </aside>
   );
 };

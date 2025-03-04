@@ -8,6 +8,15 @@
 }
 
 #abc{
-    background-color: #3e78ce93;
+    background-color: #5a85bd00;
 }
 
+.nav-link {
+    background-color: var(--link-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: var(--hover-bg);
+}

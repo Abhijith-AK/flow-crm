@@ -136,3 +136,38 @@ export const themes = [
     }
 ];
 
+export const lineData = [
+    { "name": "Week 1", "activeUsers": 120 },
+    { "name": "Week 2", "activeUsers": 150 },
+    { "name": "Week 3", "activeUsers": 180 },
+    { "name": "Week 4", "activeUsers": 200 }
+]
+
+export const barData = [
+    { "month": "Jun 2024", "activeCount": 7800 },
+    { "month": "Jul 2024", "activeCount": 8000 },
+    { "month": "Aug 2024", "activeCount": 8200 },
+    { "month": "Sep 2024", "activeCount": 7900 },
+    { "month": "Oct 2024", "activeCount": 8100 },
+    { "month": "Nov 2024", "activeCount": 8500 },
+    { "month": "Dec 2024", "activeCount": 8700 }
+]
+
+export const areaData = [
+    { "month": "Jun", "activeUsers": 5800 },
+    { "month": "Jul", "activeUsers": 6100 },
+    { "month": "Aug", "activeUsers": 8300 },
+    { "month": "Sep", "activeUsers": 7900 },
+    { "month": "Oct", "activeUsers": 7200 },
+    { "month": "Nov", "activeUsers": 8600 },
+    { "month": "Dec", "activeUsers": 8900 }
+]
+
+export const radarData = [
+    { "category": "Retail", "CRMs": 120 },
+    { "category": "IT Services", "CRMs": 180 },
+    { "category": "Healthcare", "CRMs": 95 },
+    { "category": "Finance", "CRMs": 160 },
+    { "category": "Education", "CRMs": 130 },
+    { "category": "Real Estate", "CRMs": 110 }
+]

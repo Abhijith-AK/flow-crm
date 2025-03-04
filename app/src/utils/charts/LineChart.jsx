@@ -5,7 +5,7 @@ import React from 'react'
 const LineChartC = ({ data, value, strokeColor, gridColor, lineColor, contentBackground, contentColor, fontColor }) => {
     return (
         // responsive container
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={175}>
             {/* Line Chart */}
             <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                 {/* background grid */}
@@ -15,7 +15,11 @@ const LineChartC = ({ data, value, strokeColor, gridColor, lineColor, contentBac
                 {/* Yaxis */}
                 <YAxis stroke={lineColor} tick={{ fill: fontColor }} />
                 {/* shows details on hover */}
-                <Tooltip contentStyle={{ backgroundColor: contentBackground, color: contentColor }}  />
+                <Tooltip contentStyle={{ backgroundColor: contentBackground, color: contentColor }}
+                    itemStyle={{ color: contentColor }} // Default color for items
+                    formatter={(value, name) => (
+                        <span style={{ color: contentColor, fontWeight: "bold" }}>{value}</span> // Custom color for values
+                    )} />
                 {/* Displays series names & colors */}
                 <Legend  />
                 {/*  Line Component */}

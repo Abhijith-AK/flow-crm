@@ -1,5 +1,6 @@
 const users = require("../models/userModel")
 const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken")
 
 // verify email
 exports.registerVerifyEmailController = async (req, res) => {
@@ -51,7 +52,23 @@ exports.updateManagerCrmController = async (req, res) => {
     }
 }
 
-// login user
-const loginUserController = async (req, res) => {
 
+// login user
+exports.loginUserController = async (req, res) => {
+    const { email, password } = req.body
+    if(!email || !password) return res.send(406).json("All fields are required")
+    try {
+        const existingUser = await users.findOne({email})
+        if(!existingUser) return res.status(401).json("Invalid Credentials")
+        const isPasswordValid = await bcrypt.compare(password, existingUser.password)
+        if (isPasswordValid || password === existingUser.password) {
+            const token = jwt.sign({ userId: existingUser._id }, process.env.JWTPASS)
+            res.status(200).json({ user: existingUser, token });
+        } else {
+            res.status(401).json("Invalid Credentials!!")
+        }
+    } catch (error) {
+        res.status(401).json(error)
+        console.log(error);
+    }
 }
