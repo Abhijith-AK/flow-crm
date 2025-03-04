@@ -1,6 +1,5 @@
 import { Edit, Eye } from 'lucide-react';
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSelector } from "react-redux"
 
@@ -132,6 +131,7 @@ const LeadsTable = ({ search, setSearch }) => {
                 </div>
             )}
             {/* TODO: modal for actions */}
+            
         </div>
     );
 };

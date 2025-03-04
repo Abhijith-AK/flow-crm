@@ -25,7 +25,7 @@ const TopNavBar = ({ theme, id, name }) => {
                     })}
                 >
                     <LayoutDashboard />
-                    <p className='hidden md:flex'>Dashboard</p>
+                    <p className='hidden ms-2 md:flex'>Dashboard</p>
                 </NavLink>
                 <NavLink
 
@@ -36,7 +36,7 @@ const TopNavBar = ({ theme, id, name }) => {
                     })}
                     className="flex nav-link p-3 rounded-lg items-center mx-2" to={`/crm/${id}/manager/leads`} >
                     <CircleUser />
-                    <p className='hidden md:flex'>Leads</p>
+                    <p className='hidden ms-2 md:flex'>Leads</p>
                 </NavLink>
                 <NavLink
 
@@ -47,7 +47,7 @@ const TopNavBar = ({ theme, id, name }) => {
                     })}
                     className="flex  nav-link p-3 rounded-lg items-center mx-2" to={`/crm/${id}/manager/tasks`} >
                     <ListTodo />
-                    <p className='hidden md:flex'>Tasks</p>
+                    <p className='hidden ms-2 md:flex'>Tasks</p>
                 </NavLink>
                 <NavLink
 
@@ -58,7 +58,7 @@ const TopNavBar = ({ theme, id, name }) => {
                     })}
                     className="flex  nav-link p-3 rounded-lg items-center mx-2" to={`/crm/${id}/manager/team`} >
                     <Users />
-                    <p className='hidden md:flex'>Employees</p>
+                    <p className='hidden ms-2 md:flex'>Employees</p>
                 </NavLink>
                 <NavLink
 
@@ -69,7 +69,7 @@ const TopNavBar = ({ theme, id, name }) => {
                     })}
                     className="flex  nav-link p-3 rounded-lg items-center mx-2" to={`/crm/${id}/manager/chat`} >
                     <MessageCircle />
-                    <p className='hidden md:flex'>Chat</p>
+                    <p className='hidden ms-2 md:flex'>Chat</p>
                 </NavLink>
                 <NavLink
 
@@ -80,7 +80,7 @@ const TopNavBar = ({ theme, id, name }) => {
                     })}
                     className="flex  nav-link p-3 rounded-lg items-center mx-2" to={`/crm/${id}/manager/settings`} >
                     <Settings />
-                    <p className='hidden md:flex'>Settings</p>
+                    <p className='hidden ms-2 md:flex'>Settings</p>
                 </NavLink>
             </div>
         </nav>

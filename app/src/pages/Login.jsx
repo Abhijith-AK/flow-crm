@@ -3,6 +3,7 @@ import AuthImagePattern from "../utils/Patterns/AuthImagePattern";
 import { Link, useNavigate } from "react-router"; 
 import { formValidator } from "../utils/FormValidator";
 import { loginAPI } from "../services/allAPI";
+import { LoaderCircle } from "lucide-react";
 
 const Login = () => {
     const navigate = useNavigate()
@@ -12,6 +13,7 @@ const Login = () => {
     });
 
     const [errors, setErrors] = useState({ email: "", password: "" });
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -31,6 +33,8 @@ const Login = () => {
             return;
         }
 
+        setLoading(true)
+
         const reqBody = {
             email : credentials.email,
             password : credentials.password
@@ -49,13 +53,15 @@ const Login = () => {
                 } else if (role === "admin") {
                     navigate('/admin')
                 }
+                setLoading(false)
             } else {
                 alert(response.response.data)
                 console.log(response);
-                
+                setLoading(false)
             }
         } catch (error) {
             alert(error.response.message)
+            setLoading(false)
         }
     };
 
@@ -92,9 +98,9 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full p-3 bg-blue-600 rounded-lg text-lg hover:bg-blue-700"
+                        className="w-full p-3 bg-blue-600 rounded-lg text-lg hover:bg-blue-700 flex gap-4 justify-center"
                     >
-                        Login
+                        Login  {loading && <LoaderCircle className="animate-spin" size={30} />}
                     </button>
                 </form>
 

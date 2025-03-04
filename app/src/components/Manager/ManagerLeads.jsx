@@ -9,7 +9,7 @@ const ManagerLeads = () => {
   return (
     <div>
       <div className='w-full min-h-screen'>
-        <div className="flex gap-4 justify-around p-3 m-3">
+        <div className="flex flex-wrap md:flex-nowrap gap-4 justify-around p-3 m-3">
           <h1 className="text-3xl flex-1">Leads Management</h1>
           <input
             type="text"
