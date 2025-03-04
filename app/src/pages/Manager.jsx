@@ -4,12 +4,14 @@ import SideNavBar from '../components/Manager/SideNavBar'
 import { Outlet, useNavigate, useParams } from 'react-router'
 import BottomNavBar from '../components/Manager/BottomNavBar'
 import { getCRMAPI } from '../services/allAPI'
+import {useDispatch} from "react-redux"
+import { setCrm } from '../redux/slices/crmSlice'
 
 const Manager = () => {
   const id = useParams().id
+  const dispatch = useDispatch()
   const [open, setOpen] = useState(window.innerWidth > 768);
   const [crmDetails, setCrmDetails] = useState(null)
-  console.log(crmDetails)
   const token = localStorage.getItem("token")
   const navigate = useNavigate()
   const getCRMDetails = async () => {
@@ -22,6 +24,7 @@ const Manager = () => {
         if (response.status == 200) {
           const details = response.data
           setCrmDetails(details)
+          dispatch(setCrm(details))
         } else {
           alert(response.response.data)
           console.log(response)
