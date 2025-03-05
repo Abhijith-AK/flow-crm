@@ -16,7 +16,7 @@ exports.registerVerifyEmailController = async (req, res) => {
 }
 
 // register user
-exports.registerUserController = async (req, res) => {
+exports.registerManagerController = async (req, res) => {
     const { name, email, password } = req.body
     try {
         const existingUser = await users.findOne({ email });
@@ -31,7 +31,7 @@ exports.registerUserController = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json(error)
-        console.log("Error inside registerUserController", error)
+        console.log("Error inside registerManagerController", error)
     }
 }
 
@@ -70,5 +70,81 @@ exports.loginUserController = async (req, res) => {
     } catch (error) {
         res.status(401).json(error)
         console.log(error);
+    }
+}
+
+
+// register employee
+exports.registerEmployeeController = async (req, res) => {
+    const { name, email, password, crmId } = req.body
+    try {
+        const existingUser = await users.findOne({ email });
+        if (existingUser) return res.status(401).json("An account with this email already exists! Please try a different email address.")
+        const encryptedPassword = await bcrypt.hash(password, 10);
+        const newUser = new users({
+            name, email, password: encryptedPassword, crmId, role: 'employee'
+        })
+        if (newUser) {
+            await newUser.save()
+            res.status(201).json(newUser)
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside registerEmployeeController", error)
+    }
+}
+
+// get all employee
+exports.getAllEmployeeController = async (req, res) => {
+    const { id } = req.params
+    try {
+        const allEmployee = await users.find({ crmId: id, role: "employee" })
+        if (allEmployee) res.status(200).json(allEmployee)
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside getAllEmployeeController", error)
+    }
+}
+
+// get employee
+exports.getEmployeeController = async (req, res) => {
+    const { id } = req.params
+    try {
+        const employee = await users.findById(id)
+        if (employee) {
+            res.status(200).json(employee)
+        } else {
+            res.status(404).json("Not Found!!")
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside getEmployeeController", error)
+    }
+}
+
+// update employee
+exports.updateEmployeeController = async (req, res) => {
+    const {id} = req.params
+    const {crmId, name, email, role } = req.body
+    try {
+        const updateManager = await users.findByIdAndUpdate(id, { crmId, name, email, role }, { new: true });
+        if (updateManager) {
+            res.status(201).json(updateManager)
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside updateEmployeeController", error)
+    }
+}
+
+// delete employee
+exports.deleteEmployeeController = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const deletedEmployee = await users.findByIdAndDelete(id)
+        if (deletedEmployee) res.status(200).json(deletedEmployee);
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside deleteEmployeeController", error)
     }
 }

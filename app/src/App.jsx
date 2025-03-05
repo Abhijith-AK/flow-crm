@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Landing from './pages/Landing'
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useLocation } from 'react-router'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Pnf from './pages/Pnf'
@@ -18,8 +18,49 @@ import ManagerEmployees from './components/Manager/ManagerEmployees'
 import ManagerTasks from './components/Manager/ManagerTasks'
 import ManagerSettings from './components/Manager/ManagerSettings'
 import ManagerChat from './components/Manager/ManagerChat'
+import { useSelector } from 'react-redux'
 
 const App = () => {
+  const location = useLocation()
+  const { crm } = useSelector((state) => state.crm)
+  const [title, setTitle] = useState("")
+  useEffect(() => {
+    if (crm?.name) {
+      setTitle(crm.name)
+    }
+  }, [crm])
+  useEffect(() => {
+    const titles = {
+      '/': 'FlowCRM',
+      '/login': 'FlowCRM - Login',
+      '/register': 'FlowCRM - Register',
+      '/admin': 'Admin',
+      '/admin/crm': 'CRM Management',
+      '/admin/bills': 'Payments',
+      '/admin/requests': 'Complaints',
+    };
+
+    const path = location.pathname;
+
+    let dynamicTitle = titles[path] || 'FlowCRM';
+
+    if (location.pathname.includes('/manager')) {
+      dynamicTitle = `${title}`
+    }
+    if (location.pathname.includes('manager/leads')) {
+      dynamicTitle = `${title} - Leads`
+    } else if (location.pathname.includes('manager/team')) {
+      dynamicTitle = `${title} - Team`
+    } else if (location.pathname.includes('manager/tasks')) {
+      dynamicTitle = `${title} - Tasks`
+    } else if (location.pathname.includes('manager/settings')) {
+      dynamicTitle = `${title} - Settings`
+    } else if (location.pathname.includes('manager/chat')) {
+      dynamicTitle = `${title} - Chat`
+    }
+
+    document.title = dynamicTitle;
+  }, [location, title])
   return (
     <Routes>
       <Route path='/' element={<Landing />} />
