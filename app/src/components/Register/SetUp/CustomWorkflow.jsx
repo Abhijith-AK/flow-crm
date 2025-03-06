@@ -11,7 +11,7 @@ const CustomWorkflow = () => {
   const [stage, setStage] = useState("");
   const [editStage, setEditStage] = useState({ index: null, name: "" });
   const [workflow, setWorkflow] = useState(workflow2);
-  const defaultWorkflow = ["Lead", "Contacted", "Proposal Sent", "Negotiation", "Closed"];
+  const defaultWorkflow = ["To Do", "In Progress", "Review", "Completed"];
 
   // Handle Drag & Drop Reordering
   const handleOnDragEnd = (result) => {
