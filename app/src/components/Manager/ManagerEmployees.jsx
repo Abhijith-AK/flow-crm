@@ -1,13 +1,26 @@
-import React, { useState } from 'react'
-import { useSelector } from "react-redux"
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "react-redux"
 import { PlusCircle } from 'lucide-react';
 import EmployeesTable from './EmployeesTable';
 import { formValidator } from '../../utils/FormValidator'
-import { registerEmployeeAPI } from '../../services/allAPI';
+import { deleteEmployeeAPI, registerEmployeeAPI } from '../../services/allAPI';
+import { getEmployees } from '../../redux/slices/employeeSlice';
 
 const ManagerEmployees = () => {
   const [search, setSearch] = useState('');
-  const { crm } = useSelector((state) => state.crm)
+  const [view, setView] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const [toDelete, setToDelete] = useState(false);
+  const { crm } = useSelector((state) => state.crm);
+  const { employees, loading, error } = useSelector((state) => state.employee);
+  const dispatch = useDispatch()
+
+
+  useEffect(() => {
+    dispatch(getEmployees(crm._id));
+  }, [dispatch])
+
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -28,7 +41,16 @@ const ManagerEmployees = () => {
   };
   const handleClose = () => {
     document.getElementById('my_modal_5').close();
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      phoneno: "",
+    });
     setErrors({}); // Clear errors on close
+    setView(false)
+    setUpdate(false)
+    setToDelete(false)
   };
 
   const handleSubmit = async (e) => {
@@ -61,6 +83,7 @@ const ManagerEmployees = () => {
       if (response.status === 201) {
         alert("Employee Added!");
         handleClose();
+        dispatch(getEmployees(crm._id));
         setFormData({
           name: "",
           email: "",
@@ -76,11 +99,46 @@ const ManagerEmployees = () => {
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+  }
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    const confirm = window.confirm("Are you sure want to delete this employee??")
+    if (confirm) {
+      const reqHeader = {
+        "Authorization": `Bearer ${token}`
+      };
+      try {
+        const response = await deleteEmployeeAPI(formData._id ,reqHeader);
+        if (response.status === 200) {
+          alert("Employee Deleted!");
+          handleClose();
+          dispatch(getEmployees(crm._id));
+          setFormData({
+            name: "",
+            email: "",
+            password: "",
+            phoneno: "",
+          }); // Reset form
+        } else {
+          alert("failed: " + response.response.data);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error: " + error);
+      }
+    } else {
+      return;
+    }
+  }
   return (
     <div className='w-full min-h-screen'>
       <div className="flex flex-wrap md:flex-nowrap gap-4 justify-around p-3 m-3">
         <h1 className="text-3xl flex-1">Employee Management</h1>
         <input
+          readOnly={view}
           type="text"
           placeholder="Search leads..."
           value={search}
@@ -95,17 +153,20 @@ const ManagerEmployees = () => {
           <PlusCircle size={30} className='mr-3' /> Create Employee
         </button>
       </div>
-      <div className="w-full p-3"> <EmployeesTable search={search} setSearch={setSearch} /></div>
+      <div className="w-full p-3">
+        <EmployeesTable employees={employees} search={search} setView={setView} setFormData={setFormData} setUpdate={setUpdate} />
+      </div>
       {/* Modal for Creating Lead */}
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
         <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="text-xl font-bold mb-4">Create Employee</h1>
+          <h1 className="text-xl font-bold mb-4">{view ? "Employee Details" : update ? "Update Employee" : "Create Employee"}</h1>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={update ? handleUpdate : toDelete ? handleDelete : handleSubmit}>
             {/* Employee Name */}
             <div>
               <label className="block text-sm font-medium">Name</label>
               <input
+                readOnly={view}
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
@@ -120,6 +181,7 @@ const ManagerEmployees = () => {
             <div>
               <label className="block text-sm font-medium">Email</label>
               <input
+                readOnly={view}
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
@@ -131,25 +193,29 @@ const ManagerEmployees = () => {
             </div>
 
             {/* Password */}
-            <div>
-              <label className="block text-sm font-medium">Password</label>
-              <input
-                type="password"
-                value={formData.password}
-                onChange={(e) => handleChange("password", e.target.value)}
-                className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter password"
-                required
-              />
-              {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
-            </div>
+            {(!view && !update) &&
+              <div>
+                <label className="block text-sm font-medium">Password</label>
+                <input
+                  readOnly={view}
+                  type="password"
+                  value={formData.password}
+                  onChange={(e) => handleChange("password", e.target.value)}
+                  className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter password"
+                  required
+                />
+                {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
+              </div>
+            }
 
             {/* Phone Number */}
             <div>
               <label className="block text-sm font-medium">Phone Number</label>
               <input
+                readOnly={view}
                 type="tel"
-                value={formData.phone}
+                value={formData.phoneno}
                 onChange={(e) => handleChange("phoneno", e.target.value)}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter phone number"
@@ -170,13 +236,22 @@ const ManagerEmployees = () => {
               </button>
 
               {/* Submit Button */}
-              <button
+              {!view && <button
                 style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
                 type="submit"
                 className="w-full py-2 rounded-md transition"
               >
-                Create Employee
-              </button>
+                {update ? "Update" : "Create"} Employee
+              </button>}
+
+              {view && <button
+                onClick={() => setToDelete(true)}
+                style={{ backgroundColor: "red", color: "white" }}
+                type="submit"
+                className="w-full py-2 rounded-md transition"
+              >
+                Delete Employee
+              </button>}
             </div>
           </form>
         </div>

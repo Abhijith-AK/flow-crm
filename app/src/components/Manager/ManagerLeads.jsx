@@ -5,12 +5,14 @@ import { PlusCircle } from 'lucide-react';
 import { addLeadAPI } from '../../services/allAPI';
 import { formValidator } from '../../utils/FormValidator';
 import { getEmployees } from '../../redux/slices/employeeSlice';
+import { getLeads } from '../../redux/slices/leadSlice';
 
 const ManagerLeads = () => {
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phoneno: "",
     status: "new",
     revenue: "",
     assignedTo: null,
@@ -19,6 +21,7 @@ const ManagerLeads = () => {
   const dispatch = useDispatch()
   const { crm } = useSelector((state) => state.crm);
   const { employees, loading, error } = useSelector((state) => state.employee);
+  const { leads, loading: loadung2, error: error2 } = useSelector((state) => state.lead);
   const token = localStorage.getItem("token");
 
   const handleChange = (key, value) => {
@@ -41,7 +44,6 @@ const ManagerLeads = () => {
     let isValid = true;
     const newErrors = {};
     Object.keys(formData).forEach((key) => {
-      console.log(formData[key])
       const validation = formValidator(key, formData[key]);
       if (!validation.validation) {
         isValid = false;
@@ -64,7 +66,8 @@ const ManagerLeads = () => {
       if (response.status === 201) {
         alert("Lead Added!");
         handleClose();
-        setFormData({ name: "", email: "", status: "", revenue: "", assignedTo: null }); // Reset form
+        dispatch(getLeads(crm._id));
+        setFormData({ name: "", email: "", phoneno: "", status: "", revenue: "", assignedTo: null }); // Reset form
       } else {
         alert("Creation failed: " + response.response.data);
       }
@@ -78,8 +81,12 @@ const ManagerLeads = () => {
     dispatch(getEmployees(crm._id));
   }, [dispatch])
 
-  if(loading) return <p>Loading..</p>
-  if(error) return <p>Error..</p>
+  useEffect(() => {
+    dispatch(getLeads(crm._id));
+  }, [dispatch,])
+
+  if (loading || loadung2) return <p>Loading..</p>
+  if (error || error2) return <p>Error..</p>
   if (employees?.length > 0) {
     return (
       <div>
@@ -102,7 +109,7 @@ const ManagerLeads = () => {
             </button>
           </div>
           <div className="w-full p-3">
-            <LeadsTable search={search} setSearch={setSearch} />
+            <LeadsTable leads={leads} search={search} />
           </div>
 
           {/* Modal for Creating Lead */}
@@ -142,12 +149,12 @@ const ManagerLeads = () => {
                   <label className="block text-sm font-medium">Phone Number</label>
                   <input
                     type="tel"
-                    value={formData.phone}
+                    value={formData.phoneno}
                     onChange={(e) => handleChange("phoneno", e.target.value)}
                     className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter phone number"
                   />
-                  {errors.phone && <p className="text-red-500 text-xs">{errors.phone}</p>}
+                  {errors.phoneno && <p className="text-red-500 text-xs">{errors.phoneno}</p>}
                 </div>
 
                 {/* Status Dropdown */}
@@ -165,6 +172,25 @@ const ManagerLeads = () => {
                   </select>
                   {errors.status && <p className="text-red-500 text-xs">{errors.status}</p>}
                 </div>
+
+                {/* Assigned To Dropdown */}
+                <div>
+                  <label className="block text-sm font-medium">Assigned To</label>
+                  <select
+                    value={formData.assignedTo || ""}
+                    onChange={(e) => handleChange("assignedTo", e.target.value)}
+                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="" disabled>Select an employee</option>
+                    {employees.map((employee) => (
+                      <option key={employee._id} value={employee._id}>
+                        {employee.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.assignedTo && <p className="text-red-500 text-xs">{errors.assignedTo}</p>}
+                </div>
+
 
                 {/* Possible Revenue */}
                 <div>

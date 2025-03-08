@@ -76,13 +76,13 @@ exports.loginUserController = async (req, res) => {
 
 // register employee
 exports.registerEmployeeController = async (req, res) => {
-    const { name, email, password, crmId } = req.body
+    const { name, email, password, phoneno, crmId } = req.body
     try {
         const existingUser = await users.findOne({ email });
         if (existingUser) return res.status(401).json("An account with this email already exists! Please try a different email address.")
         const encryptedPassword = await bcrypt.hash(password, 10);
         const newUser = new users({
-            name, email, password: encryptedPassword, crmId, role: 'employee'
+            name, email, password: encryptedPassword, phoneno, crmId, role: 'employee'
         })
         if (newUser) {
             await newUser.save()
@@ -125,9 +125,9 @@ exports.getEmployeeController = async (req, res) => {
 // update employee
 exports.updateEmployeeController = async (req, res) => {
     const {id} = req.params
-    const {crmId, name, email, role } = req.body
+    const { crmId, name, email, phoneno, role } = req.body
     try {
-        const updateManager = await users.findByIdAndUpdate(id, { crmId, name, email, role }, { new: true });
+        const updateManager = await users.findByIdAndUpdate(id, { crmId, name, email, phoneno, role }, { new: true });
         if (updateManager) {
             res.status(201).json(updateManager)
         }

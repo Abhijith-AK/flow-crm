@@ -16,22 +16,22 @@ const employeesData = [
     { id: 10, name: "Eve Adams", email: "eve@example.com", status: "Inactive", lastLogin: "2025-02-25", tasks: 0 },
 ];
 
-const EmployeesTable = ({ search, setSearch }) => {
+const EmployeesTable = ({ search, employees, setView, setUpdate, setFormData }) => {
     const { crm } = useSelector((state) => state.crm);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
     // Filter Employees based on search input
-    const filteredEmployees = employeesData.filter(employee =>
+    const filteredEmployees = employees?.filter(employee =>
         employee.name.toLowerCase().includes(search.toLowerCase()) ||
         employee.email.toLowerCase().includes(search.toLowerCase()) ||
         employee.status.toLowerCase().includes(search.toLowerCase())
     );
 
     // Pagination Logic
-    const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredEmployees?.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const selectedEmployees = filteredEmployees.slice(startIndex, startIndex + itemsPerPage);
+    const selectedEmployees = filteredEmployees?.slice(startIndex, startIndex + itemsPerPage);
 
     return (
         <div
@@ -59,10 +59,10 @@ const EmployeesTable = ({ search, setSearch }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {selectedEmployees.length > 0 ? selectedEmployees.map((employee) => (
+                        {selectedEmployees?.length > 0 ? selectedEmployees.map((employee, i) => (
                             <motion.tr
                                 style={{ border: `2px solid ${crm?.theme?.card.border}` }}
-                                key={employee.id}
+                                key={i}
                                 className="border-b border-gray-50 transition"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -74,11 +74,22 @@ const EmployeesTable = ({ search, setSearch }) => {
                                 <td className="p-3">{employee.lastLogin}</td>
                                 <td className="p-3">{employee.tasks}</td>
                                 <td className="p-3 flex gap-5">
-                                    <button className="flex items-center hover:underline">
+                                    <button
+                                        onClick={() => {
+                                            document.getElementById('my_modal_5').showModal()
+                                            setView(true)
+                                            setFormData({...employee})
+                                        }}
+                                        className="flex items-center hover:underline">
                                         <Eye size={20} className="mr-2" />
                                         View
                                     </button>
-                                    <button className="flex items-center hover:underline">
+                                    <button
+                                        onClick={() => {
+                                            document.getElementById('my_modal_5').showModal()
+                                            setUpdate(true)
+                                            setFormData({ ...employee })
+                                        }}    className="flex items-center hover:underline">
                                         <Edit size={20} className="mr-2" />
                                         Update
                                     </button>

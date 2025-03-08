@@ -19,7 +19,7 @@ const leadSchema = new mongoose.Schema({
     },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "employee",
+        ref: "users",
         default: null
     },
     crmId: {

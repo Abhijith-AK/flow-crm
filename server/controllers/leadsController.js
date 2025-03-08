@@ -23,7 +23,7 @@ exports.addLeadController = async (req, res) => {
 exports.getAllLeadsController = async (req, res) => {
     const { id } = req.params
     try {
-        const allLeads = await leads.find({ crmId: id })
+        const allLeads = await leads.find({ crmId: id }).populate("assignedTo")
         if(allLeads) res.status(200).json(allLeads)
     } catch (error) {
         res.status(500).json(error)
@@ -35,7 +35,7 @@ exports.getAllLeadsController = async (req, res) => {
 exports.getALeadController = async (req, res) => {
     const { id } = req.params
     try {
-        const lead = await leads.findById(id)
+        const lead = await leads.findById(id).populate("assignedTo")
         if (lead) {
             res.status(200).json(lead)
         } else {

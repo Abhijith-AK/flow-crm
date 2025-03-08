@@ -1,4 +1,4 @@
-import { Edit, Eye } from 'lucide-react';
+import { Eye } from 'lucide-react';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSelector } from "react-redux"
@@ -16,13 +16,13 @@ const leadsData = [
     { id: 10, name: "Emma Thomas", email: "emma@example.com", status: "New", assignedTo: "Jack Wilson" },
 ];
 
-const LeadsTable = ({ search, setSearch }) => {
+const LeadsTable = ({ search, leads }) => {
     const { crm } = useSelector((state) => state.crm)
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
     // Filter Leads based on search input
-    const filteredLeads = leadsData.filter(lead =>
+    const filteredLeads = leads?.filter(lead =>
         lead.name.toLowerCase().includes(search.toLowerCase()) ||
         lead.email.toLowerCase().includes(search.toLowerCase()) ||
         lead.status.toLowerCase().includes(search.toLowerCase()) ||
@@ -30,9 +30,9 @@ const LeadsTable = ({ search, setSearch }) => {
     );
 
     // Pagination Logic
-    const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
+    const totalPages = Math.ceil(filteredLeads?.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const selectedLeads = filteredLeads.slice(startIndex, startIndex + itemsPerPage);
+    const selectedLeads = filteredLeads?.slice(startIndex, startIndex + itemsPerPage);
 
     return (
         <div
@@ -59,7 +59,7 @@ const LeadsTable = ({ search, setSearch }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {selectedLeads.length > 0 ? selectedLeads.map((lead) => (
+                        {selectedLeads?.length > 0 ? selectedLeads.map((lead) => (
                             <motion.tr
                                 style={{ border: `2px solid ${crm?.theme?.card.border}` }}
                                 key={lead.id}
@@ -71,19 +71,13 @@ const LeadsTable = ({ search, setSearch }) => {
                                 <td className="p-3">{lead.name}</td>
                                 <td className="p-3">{lead.email}</td>
                                 <td className="p-3">{lead.status}</td>
-                                <td className="p-3">{lead.assignedTo}</td>
+                                <td className="p-3">{lead.assignedTo.name}</td>
                                 <td className="p-3 flex gap-5">
                                     <button
                                         className="flex items-center hover:underline"
                                     >
                                         <Eye size={20} className="mr-2" />
                                         View
-                                    </button>
-                                    <button
-                                        className="flex items-center hover:underline"
-                                    >
-                                        <Edit size={20} className="mr-2" />
-                                        Update
                                     </button>
                                 </td>
                             </motion.tr>

@@ -14,6 +14,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phoneno: {
+        type: String,
+    },
     role: {
         type: String,
         required: true
