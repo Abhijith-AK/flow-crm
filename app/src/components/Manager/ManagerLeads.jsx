@@ -18,7 +18,7 @@ const ManagerLeads = () => {
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch()
   const { crm } = useSelector((state) => state.crm);
-  const { employee, loading, error } = useSelector((state) => state.crm);
+  const { employees, loading, error } = useSelector((state) => state.employee);
   const token = localStorage.getItem("token");
 
   const handleChange = (key, value) => {
@@ -80,7 +80,7 @@ const ManagerLeads = () => {
 
   if(loading) return <p>Loading..</p>
   if(error) return <p>Error..</p>
-  if (employee?.length > 0) {
+  if (employees?.length > 0) {
     return (
       <div>
         <div className='w-full min-h-screen'>
@@ -113,12 +113,12 @@ const ManagerLeads = () => {
               <form className="space-y-4" onSubmit={handleSubmit}>
                 {/* Lead Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Lead Name</label>
+                  <label className="block text-sm font-medium">Lead Name</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => handleChange("name", e.target.value)}
-                    className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter lead name"
                   />
                   {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
@@ -126,24 +126,37 @@ const ManagerLeads = () => {
 
                 {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+                  <label className="block text-sm font-medium">Email</label>
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleChange("email", e.target.value)}
-                    className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter email"
                   />
                   {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
                 </div>
 
+                {/* Phone Number */}
+                <div>
+                  <label className="block text-sm font-medium">Phone Number</label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleChange("phoneno", e.target.value)}
+                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter phone number"
+                  />
+                  {errors.phone && <p className="text-red-500 text-xs">{errors.phone}</p>}
+                </div>
+
                 {/* Status Dropdown */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <label className="block text-sm font-medium">Status</label>
                   <select
                     value={formData.status}
                     onChange={(e) => handleChange("status", e.target.value)}
-                    className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="new">New</option>
                     <option value="in-progress">In Progress</option>
@@ -155,12 +168,12 @@ const ManagerLeads = () => {
 
                 {/* Possible Revenue */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Possible Revenue</label>
+                  <label className="block text-sm font-medium">Possible Revenue</label>
                   <input
                     type="number"
                     value={formData.revenue}
                     onChange={(e) => handleChange("revenue", e.target.value)}
-                    className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Enter expected revenue"
                   />
                   {errors.revenue && <p className="text-red-500 text-xs">{errors.revenue}</p>}
@@ -169,17 +182,19 @@ const ManagerLeads = () => {
                 <div className='flex gap-5'>
                   {/* Close Button */}
                   <button
+                    style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
                     type="button"
                     onClick={handleClose}
-                    className="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
+                    className="w-full py-2 rounded-md transition"
                   >
                     Close
                   </button>
 
                   {/* Submit Button */}
                   <button
+                    style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
                     type="submit"
-                    className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                    className="w-full py-2 rounded-md transition"
                   >
                     Create Lead
                   </button>
@@ -187,6 +202,7 @@ const ManagerLeads = () => {
               </form>
             </div>
           </dialog>
+
         </div>
       </div>
     );

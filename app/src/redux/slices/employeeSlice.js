@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAllEmployeeAPI } from "../../services/allAPI";
 
+
 const initialState = {
-    employees: [],
+    employees: null,
     loading: false,
     error: null
 }
@@ -11,7 +12,10 @@ export const getEmployees = createAsyncThunk(
     "employee/getEmployees",
     async (crmId, { rejectWithValue }) => {
         try {
-            const response = await getAllEmployeeAPI(crmId);
+            const token = localStorage.getItem("token");
+            const response = await getAllEmployeeAPI(crmId, {
+                "Authorization": `Bearer ${token}`
+            });
             return response.data
         } catch (error) {
             return rejectWithValue(error.response.data)

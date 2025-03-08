@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useSelector } from "react-redux"
 import { PlusCircle } from 'lucide-react';
 import EmployeesTable from './EmployeesTable';
+import { formValidator } from '../../utils/FormValidator'
+import { registerEmployeeAPI } from '../../services/allAPI';
 
 const ManagerEmployees = () => {
   const [search, setSearch] = useState('');
@@ -9,12 +11,13 @@ const ManagerEmployees = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    status: "new",
-    revenue: "",
-    assignedTo: null,
+    password: "",
+    phoneno: "",
   });
+
   const [errors, setErrors] = useState({});
 
+  const token = localStorage.getItem("token")
 
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });
@@ -54,11 +57,16 @@ const ManagerEmployees = () => {
     const reqBody = { ...formData, crmId: crm._id };
 
     try {
-      const response = await addLeadAPI(reqHeader, reqBody);
+      const response = await registerEmployeeAPI(reqHeader, reqBody);
       if (response.status === 201) {
-        alert("Lead Added!");
+        alert("Employee Added!");
         handleClose();
-        setFormData({ name: "", email: "", status: "", revenue: "", assignedTo: null }); // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          phoneno: "",
+        }); // Reset form
       } else {
         alert("Creation failed: " + response.response.data);
       }
@@ -91,85 +99,89 @@ const ManagerEmployees = () => {
       {/* Modal for Creating Lead */}
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
         <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
-          <h1 className="text-xl font-bold mb-4">Create Lead</h1>
+          <h1 className="text-xl font-bold mb-4">Create Employee</h1>
 
           <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Lead Name */}
+            {/* Employee Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Lead Name</label>
+              <label className="block text-sm font-medium">Name</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter lead name"
+                className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter employee name"
+                required
               />
               {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Email</label>
+              <label className="block text-sm font-medium">Email</label>
               <input
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleChange("email", e.target.value)}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter email"
+                required
               />
               {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
             </div>
 
-            {/* Status Dropdown */}
+            {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Status</label>
-              <select
-                value={formData.status}
-                onChange={(e) => handleChange("status", e.target.value)}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="new">New</option>
-                <option value="in-progress">In Progress</option>
-                <option value="closed-won">Closed - Won</option>
-                <option value="closed-lost">Closed - Lost</option>
-              </select>
-              {errors.status && <p className="text-red-500 text-xs">{errors.status}</p>}
+              <label className="block text-sm font-medium">Password</label>
+              <input
+                type="password"
+                value={formData.password}
+                onChange={(e) => handleChange("password", e.target.value)}
+                className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter password"
+                required
+              />
+              {errors.password && <p className="text-red-500 text-xs">{errors.password}</p>}
             </div>
 
-            {/* Possible Revenue */}
+            {/* Phone Number */}
             <div>
-              <label className="block text-sm font-medium text-gray-700">Possible Revenue</label>
+              <label className="block text-sm font-medium">Phone Number</label>
               <input
-                type="number"
-                value={formData.revenue}
-                onChange={(e) => handleChange("revenue", e.target.value)}
-                className="w-full mt-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter expected revenue"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => handleChange("phoneno", e.target.value)}
+                className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter phone number"
+                required
               />
-              {errors.revenue && <p className="text-red-500 text-xs">{errors.revenue}</p>}
+              {errors.phoneno && <p className="text-red-500 text-xs">{errors.phoneno}</p>}
             </div>
 
             <div className='flex gap-5'>
               {/* Close Button */}
               <button
+                style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
                 type="button"
                 onClick={handleClose}
-                className="w-full bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition"
+                className="w-full py-2 rounded-md transition"
               >
                 Close
               </button>
 
               {/* Submit Button */}
               <button
+                style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+                className="w-full py-2 rounded-md transition"
               >
-                Create Lead
+                Create Employee
               </button>
             </div>
           </form>
         </div>
       </dialog>
+
     </div>
   )
 }
