@@ -28,8 +28,18 @@ const ManagerLeads = () => {
     // Clone the tasks state
     const updatedTasks = { ...tasks };
 
-    // Extract source & destination arrays
+    // Extract source column
     const sourceCol = [...updatedTasks[sourceColId]];
+
+    // If source and destination are the same, just reorder
+    if (sourceColId === destColId) {
+      const [movedTask] = sourceCol.splice(source.index, 1);
+      sourceCol.splice(destination.index, 0, movedTask);
+      setTasks({ ...tasks, [sourceColId]: sourceCol });
+      return;
+    }
+
+    // Extract destination column
     const destCol = [...updatedTasks[destColId]];
 
     // Remove from source & add to destination
@@ -43,6 +53,7 @@ const ManagerLeads = () => {
       [destColId]: destCol,
     });
   };
+
 
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
@@ -144,10 +155,13 @@ const ManagerLeads = () => {
               <PlusCircle size={30} className='mr-3' /> Create Lead
             </button>
           </div>
+          <h1 className="text-2xl px-2">All Leads</h1>
           <div className="w-full p-3">
             <LeadsTable leads={leads} search={search} />
           </div>
           <div className="mt-5">
+            <h1 className="text-2xl px-2">Lead Pipeline</h1>
+            <h2 style={{color: crm?.theme?.text.secondary}} className='text-xl px-2'>Drag & Drop to change the stages</h2>
             <KanbanBoard dragEndFn={onDragEnd}>
               <div className="p-3 flex gap-2 overflow-x-auto">
                 {/* New Column */}
