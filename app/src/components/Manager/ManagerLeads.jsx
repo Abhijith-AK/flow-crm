@@ -6,8 +6,44 @@ import { addLeadAPI } from '../../services/allAPI';
 import { formValidator } from '../../utils/FormValidator';
 import { getEmployees } from '../../redux/slices/employeeSlice';
 import { getLeads } from '../../redux/slices/leadSlice';
+import KanbanBoard from '../../utils/common/KanbanBoard';
+import DropColumn from '../../utils/common/DropColumn';
+import DragCard from '../../utils/common/DragCard';
 
 const ManagerLeads = () => {
+  const [tasks, setTasks] = useState({
+    new: [{ id: "a1", text: "Hello World" }],
+    contacted: [{}],
+    proposal: [{}],
+    won: [{}],
+    lost: [{}]
+  });
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const { source, destination } = result;
+    const sourceColId = source.droppableId;
+    const destColId = destination.droppableId;
+
+    // Clone the tasks state
+    const updatedTasks = { ...tasks };
+
+    // Extract source & destination arrays
+    const sourceCol = [...updatedTasks[sourceColId]];
+    const destCol = [...updatedTasks[destColId]];
+
+    // Remove from source & add to destination
+    const [movedTask] = sourceCol.splice(source.index, 1);
+    destCol.splice(destination.index, 0, movedTask);
+
+    // Update state
+    setTasks({
+      ...tasks,
+      [sourceColId]: sourceCol,
+      [destColId]: destCol,
+    });
+  };
+
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
     name: "",
@@ -111,6 +147,87 @@ const ManagerLeads = () => {
           <div className="w-full p-3">
             <LeadsTable leads={leads} search={search} />
           </div>
+          <div className="mt-5">
+            <KanbanBoard dragEndFn={onDragEnd}>
+              <div className="p-3 flex gap-2 overflow-x-auto">
+                {/* New Column */}
+                <div
+                  style={{ backgroundColor: crm?.theme?.card.background }}
+                  className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
+                  <h1 className='text-2xl mb-4'>New Leads</h1>
+                  <DropColumn colId="new">
+                    <div className='w-full min-h-5'>
+                      {tasks.new.map((task, index) => (
+                        <DragCard key={task.id} cardId={task.id} index={index}>
+                          {task.text}
+                        </DragCard>
+                      ))}
+                    </div>
+                  </DropColumn>
+                </div>
+
+                {/* Contacted Column */}
+                <div style={{ backgroundColor: crm?.theme?.card.background }}
+                  className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
+                  <h1 className='text-2xl mb-4'>Contacted</h1>
+                  <DropColumn colId="contacted">
+                    <div className='w-full min-h-5'>
+                      {tasks.contacted.map((task, index) => (
+                        <DragCard key={task.id} cardId={task.id} index={index}>
+                          {task.text}
+                        </DragCard>
+                      ))}
+                    </div>
+                  </DropColumn>
+                </div>
+
+                {/* Proposal Sent Column */}
+                <div style={{ backgroundColor: crm?.theme?.card.background }}
+                  className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
+                  <h1 className='text-2xl mb-4'>Proposal Sent</h1>
+                  <DropColumn colId="proposal">
+                    <div className='w-full min-h-5'>
+                      {tasks.proposal.map((task, index) => (
+                        <DragCard key={task.id} cardId={task.id} index={index}>
+                          {task.text}
+                        </DragCard>
+                      ))}
+                    </div>
+                  </DropColumn>
+                </div>
+
+                {/*  Won (Converted Leads) Column */}
+                <div style={{ backgroundColor: crm?.theme?.card.background }}
+                  className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
+                  <h1 className='text-2xl mb-4'>Won (Converted Leads)</h1>
+                  <DropColumn colId="won">
+                    <div className='w-full min-h-5'>
+                      {tasks.won.map((task, index) => (
+                        <DragCard key={task.id} cardId={task.id} index={index}>
+                          {task.text}
+                        </DragCard>
+                      ))}
+                    </div>
+                  </DropColumn>
+                </div>
+
+                {/* Lost (Dropped or Unqualified Leads) Column */}
+                <div style={{ backgroundColor: crm?.theme?.card.background }}
+                  className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
+                  <h1 className='text-2xl mb-4'>Lost (Dropped or Unqualified Leads)</h1>
+                  <DropColumn colId="lost">
+                    <div className='w-full min-h-5'>
+                      {tasks.lost.map((task, index) => (
+                        <DragCard key={task.id} cardId={task.id} index={index}>
+                          {task.text}
+                        </DragCard>
+                      ))}
+                    </div>
+                  </DropColumn>
+                </div>
+              </div>
+            </KanbanBoard>
+          </div>
 
           {/* Modal for Creating Lead */}
           <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
@@ -166,9 +283,10 @@ const ManagerLeads = () => {
                     className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="new">New</option>
-                    <option value="in-progress">In Progress</option>
-                    <option value="closed-won">Closed - Won</option>
-                    <option value="closed-lost">Closed - Lost</option>
+                    <option value="contacted">Contacted</option>
+                    <option value="proposal">Proposal Sent</option>
+                    <option value="won">Closed - Won</option>
+                    <option value="lost">Closed - Lost</option>
                   </select>
                   {errors.status && <p className="text-red-500 text-xs">{errors.status}</p>}
                 </div>

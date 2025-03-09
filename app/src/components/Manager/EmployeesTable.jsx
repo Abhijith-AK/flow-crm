@@ -25,7 +25,7 @@ const EmployeesTable = ({ search, employees, setView, setUpdate, setFormData }) 
     const filteredEmployees = employees?.filter(employee =>
         employee.name.toLowerCase().includes(search.toLowerCase()) ||
         employee.email.toLowerCase().includes(search.toLowerCase()) ||
-        employee.status.toLowerCase().includes(search.toLowerCase())
+        employee.status?.toLowerCase().includes(search.toLowerCase())
     );
 
     // Pagination Logic

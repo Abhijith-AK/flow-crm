@@ -25,7 +25,7 @@ export const formValidator = (type, value) => {
                 : { validation: false, message: "Name must be at least 3 characters and contain only alphabets" };
 
         case "status":
-            const validStatuses = ["new", "in-progress", "closed-won", "closed-lost"];
+            const validStatuses = ["new", "contacted", "proposal", "won", "lost"];
             return validStatuses.includes(value)
                 ? { validation: true, message: "" }
                 : { validation: false, message: "Invalid status selected" };

@@ -71,7 +71,7 @@ const LeadsTable = ({ search, leads }) => {
                                 <td className="p-3">{lead.name}</td>
                                 <td className="p-3">{lead.email}</td>
                                 <td className="p-3">{lead.status}</td>
-                                <td className="p-3">{lead.assignedTo.name}</td>
+                                <td className="p-3">{lead.assignedTo?.name || "null"}</td>
                                 <td className="p-3 flex gap-5">
                                     <button
                                         className="flex items-center hover:underline"
