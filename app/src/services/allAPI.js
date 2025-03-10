@@ -101,6 +101,11 @@ export const getAllTaskAPI = async (id, reqHeader) => {
     return await commonAPI("GET", `${SERVERURL}/api/crm/tasks-all/${id}`, {}, reqHeader)
 }
 
+// update lead
+export const updateTaskAPI = async (reqHeader, reqBody) => {
+    return await commonAPI("PUT", `${SERVERURL}/api/crm/task/update`, reqBody, reqHeader)
+}
+
 // delete task
 export const deleteTaskAPI = async (id, reqHeader) => {
     return await commonAPI("DELETE", `${SERVERURL}/api/crm/task/delete/${id}`, {}, reqHeader)

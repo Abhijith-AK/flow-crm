@@ -1,20 +1,22 @@
 import StatCard from "../../utils/common/StatCard"
 import { motion } from "framer-motion"
-import { CheckCheckIcon, Hourglass, ListTodo, PlusCircle, Workflow } from "lucide-react"
+import { AlertCircle, CheckCheckIcon, FileWarning, Hourglass, ListTodo, PlusCircle, Trash, Workflow } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import KanbanBoard from "../../utils/common/KanbanBoard"
 import DropColumn from "../../utils/common/DropColumn"
 import DragCard from "../../utils/common/DragCard"
 import { useEffect, useState } from "react"
-import {formValidator} from "../../utils/FormValidator"
-import { addTaskAPI } from "../../services/allAPI"
+import { formValidator } from "../../utils/FormValidator"
+import { addTaskAPI, deleteTaskAPI, updateTaskAPI } from "../../services/allAPI"
 import { getTasks } from "../../redux/slices/taskSlice"
 import { getEmployees } from "../../redux/slices/employeeSlice"
 
 const ManagerTasks = () => {
   const { crm } = useSelector((state) => state.crm)
   const { employees, loading, error } = useSelector((state) => state.employee);
+  const { tasks: taskSet, loading: loadin2, error: error2 } = useSelector((state) => state.task);
   const [tasks, setTasks] = useState({});
+  console.log(tasks)
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -25,6 +27,7 @@ const ManagerTasks = () => {
     crmId: crm?._id,
   })
   const [errors, setErrors] = useState({});
+  const [show, setShow] = useState(false)
   const token = localStorage.getItem("token");
   const dispatch = useDispatch()
 
@@ -36,15 +39,15 @@ const ManagerTasks = () => {
     if (workflow) {
       const initialTasks = {}
       workflow.forEach(element => {
-        initialTasks[element] = []
+        initialTasks[element] = taskSet?.filter(task => task.status === element) || []
       });
       setTasks(initialTasks)
     }
-  }, [workflow])
+  }, [workflow, taskSet])
 
-  const onDragEnd = (result) => {
+  const onDragEnd = async (result) => {
     if (!result.destination) return;
-
+    console.log(result)
     const { source, destination } = result;
     const sourceColId = source.droppableId;
     const destColId = destination.droppableId;
@@ -76,11 +79,24 @@ const ManagerTasks = () => {
       [sourceColId]: sourceCol,
       [destColId]: destCol,
     });
+
+    const reqHeader = {
+      "Authorization": `Bearer ${token}`
+    };
+
+    const reqBody = { id: result.draggableId, status: result.destination.droppableId }
+    try {
+      const response = await updateTaskAPI(reqHeader, reqBody)
+      if (response.status == 200) {
+        dispatch(getTasks(crm?._id))
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });
-
     // Validate on change
     const validation = formValidator(key, value);
     setErrors((prev) => ({ ...prev, [key]: validation.validation ? "" : validation.message }));
@@ -103,6 +119,7 @@ const ManagerTasks = () => {
       assignedTo: "",
       crmId: crm?._id,
     })
+    setShow(false)
   };
 
 
@@ -111,10 +128,12 @@ const ManagerTasks = () => {
 
     let newErrors = {};
     Object.keys(formData).forEach((key) => {
-      if(key !== "status"){const validation = formValidator(key, formData[key]);
-      if (!validation.validation) {
-        newErrors[key] = validation.message;
-      }}
+      if (key !== "status") {
+        const validation = formValidator(key, formData[key]);
+        if (!validation.validation) {
+          newErrors[key] = validation.message;
+        }
+      }
     });
 
     if (Object.keys(newErrors).length > 0) {
@@ -134,7 +153,7 @@ const ManagerTasks = () => {
       if (response.status == 201) {
         alert("Task Added!");
         handleClose()
-        dispatch(getTasks())
+        dispatch(getTasks(crm?._id))
       }
     } catch (error) {
       alert("Creation failed: " + response.response.data);
@@ -142,22 +161,65 @@ const ManagerTasks = () => {
     handleClose();
   };
 
-  
-    useEffect(() => {
-      dispatch(getEmployees(crm._id));
-    }, [dispatch])
-  
-    useEffect(() => {
-      dispatch(getTasks(crm._id));
-    }, [dispatch])
 
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    const confirm = window.confirm("Are you sure want to delete this task??")
+    if (confirm) {
+      const reqHeader = {
+        "Authorization": `Bearer ${token}`
+      };
+      try {
+        const response = await deleteTaskAPI(formData._id, reqHeader);
+        if (response.status === 200) {
+          alert("Task Deleted!");
+          handleClose();
+          dispatch(getTasks(crm._id));
+        } else {
+          alert("failed: " + response.response.data);
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error: " + error);
+      }
+    } else {
+      return;
+    }
+  }
+
+  useEffect(() => {
+    dispatch(getEmployees(crm?._id));
+  }, [dispatch])
+
+  useEffect(() => {
+    dispatch(getTasks(crm?._id));
+  }, [dispatch])
+
+  const calculateProgress = (task) => {
+    const now = new Date();
+    const due = new Date(task.dueDate);
+    const createdAt = new Date(task.createdAt);
+
+    const totalDuration = due - createdAt;
+    const remaining = due - now;
+
+    return Math.min(100, Math.max(0, (remaining / totalDuration) * 100));
+  };
 
   const stats = [
-    { title: "Total No of Tasks", content: 386, icon: ListTodo },
-    { title: "Pending", content: 386, icon: Hourglass },
-    { title: "In Progress", content: 386, icon: Workflow },
-    { title: "Completed", content: 386, icon: CheckCheckIcon }
-  ]
+    { title: "Total No of Tasks", content: taskSet?.length, icon: ListTodo },
+    { title: "Pending", content: tasks[crm?.workflows[0]]?.length || 0, icon: Hourglass },
+    {
+      title: "In Progress",
+      content: crm?.workflows?.slice(1, -1).reduce((count, status) => count + (tasks[status]?.length || 0), 0),
+      icon: Workflow
+    },
+    { title: "Completed", content: tasks[crm?.workflows?.[crm?.workflows?.length - 1]]?.length || 0, icon: CheckCheckIcon }
+  ];
+
+  if (loading || loadin2) return <p>Loading..</p>
+  if (error || error2) return <p>Error..</p>
+  if (employees?.length > 0) {
   return (
     <div className='w-full h-full'>
       <div className="flex overflow-x-auto justify-evenly mt-3">
@@ -178,16 +240,63 @@ const ManagerTasks = () => {
         <h2 style={{ color: crm?.theme?.text.secondary }} className='text-xl px-2'>Drag & Drop to change the stages</h2>
         <KanbanBoard dragEndFn={onDragEnd}>
           <div className="p-3 flex gap-2 overflow-x-auto">
-            {crm?.workflows?.map((value, index) => (
+            {crm?.workflows?.map((value, i) => (
               <div
                 style={{ backgroundColor: crm?.theme?.card.background }}
                 className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
                 <div className="flex justify-around items-center mb-4"><h1 className='text-2xl'>{value}</h1> <button onClick={() => handleOpen(value)}><PlusCircle /></button> </div>
                 <DropColumn colId={value}>
-                  <div className='w-full min-h-5'>
+                  <div className='w-full min-h-5 p-2'>
                     {tasks[value]?.map((task, index) => (
-                      <DragCard key={task.id} cardId={task.id} index={index}>
-                        {task.text}
+                      <DragCard key={task._id} cardId={task._id} index={index}>
+                        <div
+                          onClick={() => {
+                            document.getElementById("my_modal_3").showModal()
+                            setFormData(task)
+                            setShow(true)
+                          }}
+                          style={{ backgroundColor: crm?.theme?.card.background }}
+                          className={`w-full rounded-lg shadow-lg border my-2 p-4 space-y-3
+                          ${i === 0 ? "border-yellow-500" : i === crm?.workflows?.length - 1 ? "border-green-600" : "border-blue-500"}
+                        `}>
+
+                          {/* Header Section */}
+                          <div className="flex justify-between items-center">
+                            <h1 className="text-xl font-semibold">{task.title}</h1>
+                            <button className="px-2 py-1">
+                              {task.priority === "high" ? (
+                                <span className="flex items-center text-sm gap-2 bg-red-600 text-white px-2 py-1 rounded-lg">
+                                  <AlertCircle /> High
+                                </span>
+                              ) : task.priority === "medium" ? (
+                                <span className="flex items-center gap-2 bg-yellow-600 text-white px-2 py-1 rounded-lg">
+                                  <FileWarning /> Medium
+                                </span>
+                              ) : (
+                                <span className="flex items-center bg-green-600 text-white px-2 py-1 rounded-lg">
+                                  Low
+                                </span>
+                              )}
+                            </button>
+                          </div>
+
+                          {/* Description Section */}
+                          <p style={{ color: crm?.theme?.text.secondary }} className="text-md">{task.description.slice(0, 20)}...</p>
+
+                          {/* Due Date & Progress Bar */}
+                          <div className="flex flex-col gap-1">
+                            <div className="text-sm font-medium">Due: {new Date(task.dueDate).toLocaleDateString()}</div>
+                            <div className="w-full bg-gray-300 h-2 rounded-lg overflow-hidden">
+                              <div
+                                style={{ width: `${calculateProgress(task)}%` }}
+                                className={`h-full transition-all duration-300 
+                                ${calculateProgress(task) < 50 ? "bg-red-500" : "bg-green-500"}
+                                `}
+                              ></div>
+                            </div>
+                          </div>
+                        </div>
+
                       </DragCard>
                     ))}
                   </div>
@@ -203,7 +312,7 @@ const ManagerTasks = () => {
         <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
           <h1 className="text-xl font-bold mb-4">Create Lead</h1>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={show ? handleDelete : handleSubmit}>
             {/* Task Title */}
             <div>
               <label className="block text-sm font-medium">Title</label>
@@ -211,6 +320,7 @@ const ManagerTasks = () => {
                 type="text"
                 value={formData.title}
                 onChange={(e) => handleChange("title", e.target.value)}
+                readOnly={show}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter Title"
               />
@@ -223,6 +333,7 @@ const ManagerTasks = () => {
               <textarea
                 value={formData.description}
                 onChange={(e) => handleChange("description", e.target.value)}
+                readOnly={show}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter Description"
               />
@@ -235,6 +346,7 @@ const ManagerTasks = () => {
               <select
                 value={formData.priority}
                 onChange={(e) => handleChange("priority", e.target.value)}
+                readOnly={show}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="" disabled>--Select--</option>
@@ -251,6 +363,7 @@ const ManagerTasks = () => {
               <select
                 value={formData.assignedTo || ""}
                 onChange={(e) => handleChange("assignedTo", e.target.value)}
+                disabled={show}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="" disabled>Select an employee</option>
@@ -271,6 +384,7 @@ const ManagerTasks = () => {
                 type="date"
                 value={formData.dueDate}
                 onChange={(e) => handleChange("dueDate", e.target.value)}
+                disabled={show}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter expected revenue"
               />
@@ -290,18 +404,23 @@ const ManagerTasks = () => {
 
               {/* Submit Button */}
               <button
-                style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
+                style={{ backgroundColor: show ? "red" : crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
                 type="submit"
                 className="w-full py-2 rounded-md transition"
               >
-                Create Task
+                {show ? "Delete" : "Create"} Task
               </button>
             </div>
           </form>
         </div>
       </dialog>
     </div>
-  )
+    )
+  } else {
+    return <div className='w-full text-4xl text-gray-500 mt-52 text-center flex justify-center items-center'>
+      <p>Create an Employee to access Leads</p>
+    </div>
+  }
 }
 
 export default ManagerTasks

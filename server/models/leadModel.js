@@ -27,7 +27,7 @@ const leadSchema = new mongoose.Schema({
         ref: "crm",
         required: true
     },
-})
+}, { timestamps: true })
 
 const leads = mongoose.model("leads", leadSchema)
 

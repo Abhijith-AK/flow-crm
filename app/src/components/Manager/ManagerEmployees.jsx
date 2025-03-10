@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { PlusCircle } from 'lucide-react';
 import EmployeesTable from './EmployeesTable';
 import { formValidator } from '../../utils/FormValidator'
-import { deleteEmployeeAPI, registerEmployeeAPI } from '../../services/allAPI';
+import { deleteEmployeeAPI, registerEmployeeAPI, updateEmployeeAPI } from '../../services/allAPI';
 import { getEmployees } from '../../redux/slices/employeeSlice';
 
 const ManagerEmployees = () => {
@@ -101,6 +101,47 @@ const ManagerEmployees = () => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    // Validate all fields before submission
+    let isValid = true;
+    const newErrors = {};
+    Object.keys(formData).forEach((key) => {
+      console.log(formData[key])
+      const validation = formValidator(key, formData[key]);
+      if (!validation.validation) {
+        isValid = false;
+        newErrors[key] = validation.message;
+      }
+    });
+
+    if (!isValid) {
+      setErrors(newErrors);
+      return;
+    }
+
+    const reqHeader = {
+      "Authorization": `Bearer ${token}`
+    };
+    const reqBody = { ...formData, crmId: crm._id };
+
+    try {
+      const response = await updateEmployeeAPI(formData._id, reqHeader, reqBody);
+      if (response.status === 201) {
+        alert("Employee Updated!");
+        handleClose();
+        dispatch(getEmployees(crm._id));
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+          phoneno: "",
+        }); // Reset form
+      } else {
+        alert("Creation failed: " + response.response.data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error: " + error);
+    }
   }
 
   const handleDelete = async (e) => {

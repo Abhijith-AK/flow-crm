@@ -18,6 +18,28 @@ const ManagerLeads = () => {
     won: [{}],
     lost: [{}]
   });
+  
+  
+  const [search, setSearch] = useState('');
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phoneno: "",
+    status: "new",
+    revenue: "",
+    assignedTo: null,
+  });
+  const [errors, setErrors] = useState({});
+  const dispatch = useDispatch()
+  const { crm } = useSelector((state) => state.crm);
+  const { employees, loading, error } = useSelector((state) => state.employee);
+  const { leads, loading: loadung2, error: error2 } = useSelector((state) => state.lead);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    
+  }, [dispatch, leads])
+  
   const onDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -53,23 +75,6 @@ const ManagerLeads = () => {
       [destColId]: destCol,
     });
   };
-
-
-  const [search, setSearch] = useState('');
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phoneno: "",
-    status: "new",
-    revenue: "",
-    assignedTo: null,
-  });
-  const [errors, setErrors] = useState({});
-  const dispatch = useDispatch()
-  const { crm } = useSelector((state) => state.crm);
-  const { employees, loading, error } = useSelector((state) => state.employee);
-  const { leads, loading: loadung2, error: error2 } = useSelector((state) => state.lead);
-  const token = localStorage.getItem("token");
 
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });

@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
         ref: "crm",
         default: null
     },
-})
+}, { timestamps: true })
 
 const users = mongoose.model("users", userSchema);
 
