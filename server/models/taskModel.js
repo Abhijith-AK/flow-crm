@@ -1,11 +1,11 @@
 const mongoose = require("mongoose")
 
-const leadSchema = new mongoose.Schema({
-    name: {
+const taskSchema = new mongoose.Schema({
+    title: {
         type: String,
         required: true
     },
-    email: {
+    description: {
         type: String,
         required: true
     },
@@ -13,22 +13,27 @@ const leadSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    revenue: {
+    priority: {
         type: String,
+        required: true
+    },
+    dueDate: {
+        type: Date,
         required: true
     },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "users",
-        default: null
+        required: true
     },
     crmId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "crm",
-        required: true
+        required: true,
+        index: true
     },
 })
 
-const leads = mongoose.model("leads", leadSchema)
+const tasks = mongoose.model("tasks", taskSchema)
 
-module.exports = leads
+module.exports = tasks

@@ -38,6 +38,27 @@ export const formValidator = (type, value) => {
         case "assignedTo":
             return value ? { validation: true, message: "" } : { validation: false, message: "Assigned To is required" };
 
+        case "title":
+            return /^[A-Za-z0-9\s]+$/.test(value) && value.length >= 3
+                ? { validation: true, message: "" }
+                : { validation: false, message: "Title must be at least 3 characters and contain only letters, numbers, and spaces" };
+
+        case "priority":
+            return ["high", "medium", "low"].includes(value)
+                ? { validation: true, message: "" }
+                : { validation: false, message: "Invalid priority selected" };
+
+        case "dueDate":
+            return new Date(value) >= new Date()
+                ? { validation: true, message: "" }
+                : { validation: false, message: "Due date cannot be in the past" };
+        
+        case "description":
+            return value.length >= 10
+                ? { validation: true, message: "" }
+                : { validation: false, message: "Description must be at least 10 characters long" };
+
+
         default:
             return { validation: true, message: "" }; // No validation needed for other fields
     }
