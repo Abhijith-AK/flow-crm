@@ -1,7 +1,7 @@
 import {  CircleUser, LayoutDashboard, ListTodo, MessageCircle, Settings, Users } from 'lucide-react'
 import React from 'react'
 import { NavLink } from 'react-router'
-import "./manager.css"
+import "../manager.css"
 
 const BottomNavBar = ({ theme, id }) => {
     const navBackground = theme?.background

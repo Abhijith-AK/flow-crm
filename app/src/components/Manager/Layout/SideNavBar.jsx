@@ -1,6 +1,6 @@
 import { ChevronFirstIcon, CircleUser, LayoutDashboard, ListTodo, LogOut, MessageCircle, Settings, Users } from 'lucide-react';
 import { Link, useLocation } from "react-router-dom"
-import "./manager.css"
+import "../manager.css"
 
 const SidebarItem = ({ Icon, label, path, hoverColor, linkBackground, activeColor, textColor }) => {
     const location = useLocation();

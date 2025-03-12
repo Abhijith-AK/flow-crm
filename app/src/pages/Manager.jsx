@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import TopNavBar from '../components/Manager/TopNavBar'
-import SideNavBar from '../components/Manager/SideNavBar'
+import TopNavBar from '../components/Manager/Layout/TopNavBar'
+import SideNavBar from '../components/Manager/Layout/SideNavBar'
 import { Outlet, useNavigate, useParams } from 'react-router'
-import BottomNavBar from '../components/Manager/BottomNavBar'
+import BottomNavBar from '../components/Manager/Layout/BottomNavBar'
 import { getCRMAPI } from '../services/allAPI'
 import { useDispatch } from "react-redux"
 import { setCrm } from '../redux/slices/crmSlice'

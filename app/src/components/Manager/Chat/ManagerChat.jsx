@@ -1,7 +1,7 @@
 import { Megaphone, MessageCircleDashed, UserCircle2Icon, Users2 } from 'lucide-react'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getEmployees } from '../../redux/slices/employeeSlice'
+import { getEmployees } from '../../../redux/slices/employeeSlice'
 
 const ManagerChat = () => {
   const { crm } = useSelector((state) => state.crm)

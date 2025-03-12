@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
 import { PlusCircle } from 'lucide-react';
 import EmployeesTable from './EmployeesTable';
-import { formValidator } from '../../utils/FormValidator'
-import { deleteEmployeeAPI, registerEmployeeAPI, updateEmployeeAPI } from '../../services/allAPI';
-import { getEmployees } from '../../redux/slices/employeeSlice';
+import { formValidator } from '../../../utils/FormValidator'
+import { deleteEmployeeAPI, registerEmployeeAPI, updateEmployeeAPI } from '../../../services/allAPI';
+import { getEmployees } from '../../../redux/slices/employeeSlice';
 
 const ManagerEmployees = () => {
   const [search, setSearch] = useState('');

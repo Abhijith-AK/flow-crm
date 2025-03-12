@@ -13,13 +13,13 @@ import Payments from './components/Admin/Payments'
 import Complaints from './components/Admin/Complaints'
 import CrmView from './components/Admin/CrmView'
 import ManagerDasboard from './components/Manager/ManagerDasboard'
-import ManagerLeads from './components/Manager/ManagerLeads'
-import ManagerEmployees from './components/Manager/ManagerEmployees'
+import ManagerLeads from './components/Manager/Lead/ManagerLeads'
+import ManagerEmployees from './components/Manager/Employee/ManagerEmployees'
 import ManagerTasks from './components/Manager/ManagerTasks'
 import ManagerSettings from './components/Manager/ManagerSettings'
-import ManagerChat from './components/Manager/ManagerChat'
+import ManagerChat from './components/Manager/Chat/ManagerChat'
 import { useSelector } from 'react-redux'
-import LeadView from './components/Manager/LeadView'
+import LeadView from './components/Manager/Lead/LeadView'
 
 const App = () => {
   const location = useLocation()

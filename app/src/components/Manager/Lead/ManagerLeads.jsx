@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import LeadsTable from './LeadsTable';
 import { useDispatch, useSelector } from "react-redux";
 import { PlusCircle, User2 } from 'lucide-react';
-import { addLeadAPI, updateLeadStatusAPI } from '../../services/allAPI';
-import { formValidator } from '../../utils/FormValidator';
-import { getEmployees } from '../../redux/slices/employeeSlice';
-import { getLeads } from '../../redux/slices/leadSlice';
-import KanbanBoard from '../../utils/common/KanbanBoard';
-import DropColumn from '../../utils/common/DropColumn';
-import DragCard from '../../utils/common/DragCard';
+import { addLeadAPI, updateLeadStatusAPI } from '../../../services/allAPI';
+import { formValidator } from '../../../utils/FormValidator';
+import { getEmployees } from '../../../redux/slices/employeeSlice';
+import { getLeads } from '../../../redux/slices/leadSlice';
+import KanbanBoard from '../../../utils/common/KanbanBoard';
+import DropColumn from '../../../utils/common/DropColumn';
+import DragCard from '../../../utils/common/DragCard';
 
 const ManagerLeads = () => {
   const [tasks, setTasks] = useState({
