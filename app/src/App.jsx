@@ -19,6 +19,7 @@ import ManagerTasks from './components/Manager/ManagerTasks'
 import ManagerSettings from './components/Manager/ManagerSettings'
 import ManagerChat from './components/Manager/ManagerChat'
 import { useSelector } from 'react-redux'
+import LeadView from './components/Manager/LeadView'
 
 const App = () => {
   const location = useLocation()
@@ -70,7 +71,7 @@ const App = () => {
       <Route path='/admin' element={<Admin />}>
         <Route index element={<AdminDashboard />} />
         <Route path='crm' element={<CrmManagement />} />
-        <Route path='crm/:id' element={<CrmView />} />
+        <Route path='crm/:crmId' element={<CrmView />} />
         <Route path='bills' element={<Payments />} />
         <Route path='requests' element={<Complaints />} />
       </Route>
@@ -82,6 +83,7 @@ const App = () => {
         <Route path='tasks' element={<ManagerTasks />} />
         <Route path='settings' element={<ManagerSettings />} />
         <Route path='chat' element={<ManagerChat />} />
+        <Route path='leads/:leadId' element={<LeadView />} />
       </Route>
       {/* EMPLOYEE */}
       <Route path='/crm/:id/employee' element={<Employee />}>

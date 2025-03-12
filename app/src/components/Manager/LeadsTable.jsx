@@ -2,6 +2,7 @@ import { Eye } from 'lucide-react';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSelector } from "react-redux"
+import { useNavigate } from 'react-router';
 
 const leadsData = [
     { id: 1, name: "John Doe", email: "john@example.com", status: "New", assignedTo: "Alice Johnson" },
@@ -19,6 +20,7 @@ const leadsData = [
 const LeadsTable = ({ search, leads }) => {
     const { crm } = useSelector((state) => state.crm)
     const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate()
     const itemsPerPage = 8;
 
     // Filter Leads based on search input
@@ -75,6 +77,7 @@ const LeadsTable = ({ search, leads }) => {
                                 <td className="p-3 flex gap-5">
                                     <button
                                         className="flex items-center hover:underline"
+                                        onClick={() => navigate(lead._id)}
                                     >
                                         <Eye size={20} className="mr-2" />
                                         View
