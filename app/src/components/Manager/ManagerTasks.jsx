@@ -217,7 +217,7 @@ const ManagerTasks = () => {
     { title: "Completed", content: tasks[crm?.workflows?.[crm?.workflows?.length - 1]]?.length || 0, icon: CheckCheckIcon }
   ];
 
-  if (loading || loadin2) return <p>Loading..</p>
+  if (loading) return <p>Loading..</p>
   if (error || error2) return <p>Error..</p>
   if (employees?.length > 0) {
   return (
@@ -346,7 +346,7 @@ const ManagerTasks = () => {
               <select
                 value={formData.priority}
                 onChange={(e) => handleChange("priority", e.target.value)}
-                readOnly={show}
+                disabled={show}
                 className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="" disabled>--Select--</option>

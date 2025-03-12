@@ -50,11 +50,11 @@ exports.getAllTasksController = async (req, res) => {
 exports.updateTaskController = async (req, res) => {
     const { id, status } = req.body;
     try {
-        const updateLead = await tasks.findByIdAndUpdate(id, {
+        const updateTask = await tasks.findByIdAndUpdate(id, {
             status
         }, { new : true })
-        if (updateLead) {
-            res.status(200).json(updateLead)
+        if (updateTask) {
+            res.status(200).json(updateTask)
             // console.log(updateLead)
         }
     } catch (error) {

@@ -2,7 +2,9 @@ import React from 'react'
 
 const LeadView = () => {
   return (
-    <div>LeadView</div>
+    <div className='w-full min-h-screen'>
+      
+    </div>
   )
 }
 

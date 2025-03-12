@@ -63,6 +63,23 @@ exports.updateLeadController = async (req, res) => {
     }
 }
 
+// update lead Status 
+exports.updateLeadStatusController = async (req, res) => {
+    const { id, status } = req.body;
+    try {
+        const updateLead = await leads.findByIdAndUpdate(id, {
+            status
+        }, { new : true })
+        if (updateLead) {
+            res.status(200).json(updateLead)
+            // console.log(updateLead)
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside updateTaskController", error)
+    }
+}
+
 // delete lead controller
 exports.deleteLeadController = async (req, res) => {
     const  {id} = req.params;

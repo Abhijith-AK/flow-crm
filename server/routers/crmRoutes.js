@@ -24,6 +24,9 @@ crmRouter.get("/crm/leads-all/:id", jwtMiddleware, leadsController.getAllLeadsCo
 // update lead
 crmRouter.put("/crm/lead/update", jwtMiddleware, leadsController.updateLeadController)
 
+// update lead status
+crmRouter.put("/crm/lead/update-status", jwtMiddleware, leadsController.updateLeadStatusController)
+
 // delete lead
 crmRouter.delete("/crm/lead/delete/:id", jwtMiddleware, leadsController.deleteLeadController)
 

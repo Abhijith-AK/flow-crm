@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import LeadsTable from './LeadsTable';
 import { useDispatch, useSelector } from "react-redux";
-import { PlusCircle } from 'lucide-react';
-import { addLeadAPI } from '../../services/allAPI';
+import { PlusCircle, User2 } from 'lucide-react';
+import { addLeadAPI, updateLeadStatusAPI } from '../../services/allAPI';
 import { formValidator } from '../../utils/FormValidator';
 import { getEmployees } from '../../redux/slices/employeeSlice';
 import { getLeads } from '../../redux/slices/leadSlice';
@@ -12,14 +12,14 @@ import DragCard from '../../utils/common/DragCard';
 
 const ManagerLeads = () => {
   const [tasks, setTasks] = useState({
-    new: [{ id: "a1", text: "Hello World" }],
-    contacted: [{}],
-    proposal: [{}],
-    won: [{}],
-    lost: [{}]
+    new: [],
+    contacted: [],
+    proposal: [],
+    won: [],
+    lost: []
   });
-  
-  
+
+
   const [search, setSearch] = useState('');
   const [formData, setFormData] = useState({
     name: "",
@@ -37,10 +37,23 @@ const ManagerLeads = () => {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    
+    if (leads?.length) {
+      const newStage = leads?.filter(lead => lead.status === "new") || []
+      const contactedStage = leads?.filter(lead => lead.status === "contacted") || []
+      const proposalStage = leads?.filter(lead => lead.status === "proposal") || []
+      const wonStage = leads?.filter(lead => lead.status === "won") || []
+      const lostStage = leads?.filter(lead => lead.status === "lost") || []
+      setTasks({
+        new: newStage,
+        contacted: contactedStage,
+        proposal: proposalStage,
+        won: wonStage,
+        lost: lostStage
+      })
+    }
   }, [dispatch, leads])
-  
-  const onDragEnd = (result) => {
+
+  const onDragEnd = async (result) => {
     if (!result.destination) return;
 
     const { source, destination } = result;
@@ -74,7 +87,21 @@ const ManagerLeads = () => {
       [sourceColId]: sourceCol,
       [destColId]: destCol,
     });
-  };
+
+    const reqHeader = {
+      "Authorization": `Bearer ${token}`
+    };
+
+    const reqBody = { id: result.draggableId, status: result.destination.droppableId }
+    try {
+      const response = await updateLeadStatusAPI(reqHeader, reqBody)
+      if (response.status == 200) {
+        dispatch(getLeads(crm?._id))
+      }
+    } catch (error) {
+      console.log(error);
+    };
+  }
 
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });
@@ -135,9 +162,9 @@ const ManagerLeads = () => {
 
   useEffect(() => {
     dispatch(getLeads(crm._id));
-  }, [dispatch,])
+  }, [dispatch])
 
-  if (loading || loadung2) return <p>Loading..</p>
+  if (loading) return <p>Loading..</p>
   if (error || error2) return <p>Error..</p>
   if (employees?.length > 0) {
     return (
@@ -166,19 +193,34 @@ const ManagerLeads = () => {
           </div>
           <div className="mt-5">
             <h1 className="text-2xl px-2">Lead Pipeline</h1>
-            <h2 style={{color: crm?.theme?.text.secondary}} className='text-xl px-2'>Drag & Drop to change the stages</h2>
+            <h2 style={{ color: crm?.theme?.text.secondary }} className='text-xl px-2'>Drag & Drop to change the stages</h2>
             <KanbanBoard dragEndFn={onDragEnd}>
               <div className="p-3 flex gap-2 overflow-x-auto">
                 {/* New Column */}
                 <div
                   style={{ backgroundColor: crm?.theme?.card.background }}
                   className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
-                  <h1 className='text-2xl mb-4'>New Leads</h1>
+                  <div className="rounded-lg p-2 border my-2 shadow-lg">
+                    <h1 className="text-3xl text-center"> ₹ {tasks.new.reduce((a, b) => a + Number(b.revenue), 0) || 0}</h1>
+                  </div>
+                  <h1 className='text-3xl mb-2'>New Leads</h1>
+                  <div style={{backgroundColor: crm?.theme?.text.secondary}} className="h-[2px] w-full mb-6"></div>
                   <DropColumn colId="new">
                     <div className='w-full min-h-5'>
                       {tasks.new.map((task, index) => (
-                        <DragCard key={task.id} cardId={task.id} index={index}>
-                          {task.text}
+                        <DragCard key={task._id} cardId={task._id} index={index}>
+                          <div
+                            style={{ backgroundColor: crm?.theme?.card.background }}
+                            className={`w-full rounded-lg shadow-lg border my-4 p-4 space-y-3
+                              ${task.status === "new" ? "border-yellow-500"
+                                : task.status === "won" ? "border-green-600"
+                                  : task.status === "lost" ? "border-red-600"
+                                    : "border-blue-500"}
+                            `}>
+                            <h1 className="text-2xl font-bold flex justify-center gap-2"><User2 /> {task.name}</h1>
+                            <p>Assigned To: {task?.assignedTo?.name}</p>
+                            <span>Revenue: ₹{task?.revenue}</span>
+                          </div>
                         </DragCard>
                       ))}
                     </div>
@@ -188,12 +230,27 @@ const ManagerLeads = () => {
                 {/* Contacted Column */}
                 <div style={{ backgroundColor: crm?.theme?.card.background }}
                   className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
-                  <h1 className='text-2xl mb-4'>Contacted</h1>
+                  <div className="rounded-lg p-2 border my-2 shadow-lg">
+                    <h1 className="text-3xl text-center"> ₹ {tasks.contacted.reduce((a, b) => a + Number(b.revenue), 0) || 0}</h1>
+                  </div>
+                  <h1 className='text-3xl mb-2'>Contacted</h1>
+                  <div style={{backgroundColor: crm?.theme?.text.secondary}} className="h-[2px] w-full mb-6"></div>
                   <DropColumn colId="contacted">
                     <div className='w-full min-h-5'>
                       {tasks.contacted.map((task, index) => (
-                        <DragCard key={task.id} cardId={task.id} index={index}>
-                          {task.text}
+                        <DragCard key={task._id} cardId={task._id} index={index}>
+                          <div
+                            style={{ backgroundColor: crm?.theme?.card.background }}
+                            className={`w-full rounded-lg shadow-lg border my-4 p-4 space-y-3
+                              ${task.status === "new" ? "border-yellow-500"
+                                : task.status === "won" ? "border-green-600"
+                                  : task.status === "lost" ? "border-red-600"
+                                    : "border-blue-500"}
+                            `}>
+                            <h1 className="text-2xl font-bold flex justify-center gap-2"><User2 /> {task.name}</h1>
+                            <p>Assigned To: {task?.assignedTo?.name}</p>
+                            <span>Revenue: ₹{task?.revenue}</span>
+                          </div>
                         </DragCard>
                       ))}
                     </div>
@@ -203,12 +260,27 @@ const ManagerLeads = () => {
                 {/* Proposal Sent Column */}
                 <div style={{ backgroundColor: crm?.theme?.card.background }}
                   className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
-                  <h1 className='text-2xl mb-4'>Proposal Sent</h1>
-                  <DropColumn colId="proposal">
+                  <div className="rounded-lg p-2 border my-2 shadow-lg">
+                    <h1 className="text-3xl text-center"> ₹ {tasks.proposal.reduce((a, b) => a + Number(b.revenue), 0) || 0}</h1>
+                  </div>
+                  <h1 className='text-3xl mb-2'>Proposal Sent</h1>
+                  <div style={{backgroundColor: crm?.theme?.text.secondary}} className="h-[2px] w-full mb-6"></div>
+                    <DropColumn colId="proposal">
                     <div className='w-full min-h-5'>
                       {tasks.proposal.map((task, index) => (
-                        <DragCard key={task.id} cardId={task.id} index={index}>
-                          {task.text}
+                        <DragCard key={task._id} cardId={task._id} index={index}>
+                          <div
+                            style={{ backgroundColor: crm?.theme?.card.background }}
+                            className={`w-full rounded-lg shadow-lg border my-4 p-4 space-y-3
+                              ${task.status === "new" ? "border-yellow-500"
+                                : task.status === "won" ? "border-green-600"
+                                  : task.status === "lost" ? "border-red-600"
+                                    : "border-blue-500"}
+                            `}>
+                            <h1 className="text-2xl font-bold flex justify-center gap-2"><User2 /> {task.name}</h1>
+                            <p>Assigned To: {task?.assignedTo?.name}</p>
+                            <span>Revenue: ₹{task?.revenue}</span>
+                          </div>
                         </DragCard>
                       ))}
                     </div>
@@ -218,12 +290,27 @@ const ManagerLeads = () => {
                 {/*  Won (Converted Leads) Column */}
                 <div style={{ backgroundColor: crm?.theme?.card.background }}
                   className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
-                  <h1 className='text-2xl mb-4'>Won (Converted Leads)</h1>
+                  <div className="rounded-lg p-2 border border-green-500 my-2 shadow-lg">
+                    <h1 className="text-3xl text-center text-green-600"> ₹ {tasks.won.reduce((a, b) => a + Number(b.revenue), 0) || 0}</h1>
+                  </div>
+                  <h1 className='text-2xl mb-2'>Won (Converted Leads)</h1>
+                  <div style={{backgroundColor: crm?.theme?.text.secondary}} className="h-[2px] w-full mb-6"></div>
                   <DropColumn colId="won">
                     <div className='w-full min-h-5'>
                       {tasks.won.map((task, index) => (
-                        <DragCard key={task.id} cardId={task.id} index={index}>
-                          {task.text}
+                        <DragCard key={task._id} cardId={task._id} index={index}>
+                          <div
+                            style={{ backgroundColor: crm?.theme?.card.background }}
+                            className={`w-full rounded-lg shadow-lg border my-4 p-4 space-y-3
+                              ${task.status === "new" ? "border-yellow-500"
+                                : task.status === "won" ? "border-green-600"
+                                  : task.status === "lost" ? "border-red-600"
+                                    : "border-blue-500"}
+                            `}>
+                            <h1 className="text-2xl font-bold flex justify-center gap-2"><User2 /> {task.name}</h1>
+                            <p>Assigned To: {task?.assignedTo?.name}</p>
+                            <span>Revenue: ₹{task?.revenue}</span>
+                          </div>
                         </DragCard>
                       ))}
                     </div>
@@ -233,12 +320,27 @@ const ManagerLeads = () => {
                 {/* Lost (Dropped or Unqualified Leads) Column */}
                 <div style={{ backgroundColor: crm?.theme?.card.background }}
                   className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
-                  <h1 className='text-2xl mb-4'>Lost (Dropped or Unqualified Leads)</h1>
+                  {/* <div className="rounded-lg p-2 border my-2 shadow-lg">
+                    <h1 className="text-3xl text-center"> ₹ {tasks.lost.reduce((a, b) => a + Number(b.revenue), 0) || 0}</h1>
+                  </div> */}
+                  <h1 className='text-2xl mb-2'>Lost (Dropped or Unqualified Leads)</h1>
+                  <div style={{backgroundColor: crm?.theme?.text.secondary}} className="h-[2px] w-full mb-6"></div>
                   <DropColumn colId="lost">
                     <div className='w-full min-h-5'>
                       {tasks.lost.map((task, index) => (
-                        <DragCard key={task.id} cardId={task.id} index={index}>
-                          {task.text}
+                        <DragCard key={task._id} cardId={task._id} index={index}>
+                          <div
+                            style={{ backgroundColor: crm?.theme?.card.background }}
+                            className={`w-full rounded-lg shadow-lg border my-4 p-4 space-y-3
+                              ${task.status === "new" ? "border-yellow-500"
+                                : task.status === "won" ? "border-green-600"
+                                  : task.status === "lost" ? "border-red-600"
+                                    : "border-blue-500"}
+                            `}>
+                            <h1 className="text-2xl font-bold flex justify-center gap-2"><User2 /> {task.name}</h1>
+                            <p>Assigned To: {task?.assignedTo?.name}</p>
+                            <span>Revenue: ₹{task?.revenue}</span>
+                          </div>
                         </DragCard>
                       ))}
                     </div>

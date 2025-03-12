@@ -81,6 +81,12 @@ export const updateLeadAPI = async ( reqHeader, reqBody) => {
     return await commonAPI("PUT", `${SERVERURL}/api/crm/lead/update`, reqBody, reqHeader)
 }
 
+// update lead status
+export const updateLeadStatusAPI = async (reqHeader, reqBody) => {
+    return await commonAPI("PUT", `${SERVERURL}/api/crm/lead/update-status`, reqBody, reqHeader)
+}
+
+
 // delete lead
 export const deleteLeadAPI = async (id, reqHeader) => {
     return await commonAPI("DELETE", `${SERVERURL}/api/crm/lead/delete/${id}`, {}, reqHeader)
@@ -101,7 +107,7 @@ export const getAllTaskAPI = async (id, reqHeader) => {
     return await commonAPI("GET", `${SERVERURL}/api/crm/tasks-all/${id}`, {}, reqHeader)
 }
 
-// update lead
+// update task
 export const updateTaskAPI = async (reqHeader, reqBody) => {
     return await commonAPI("PUT", `${SERVERURL}/api/crm/task/update`, reqBody, reqHeader)
 }
