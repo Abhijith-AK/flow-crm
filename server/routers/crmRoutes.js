@@ -2,6 +2,7 @@ const express = require("express")
 const crmController = require("../controllers/crmController")
 const leadsController = require("../controllers/leadsController")
 const tasksController = require("../controllers/taskController")
+const noteController = require("../controllers/noteController")
 const jwtMiddleware = require("../middlewares/jwtMiddleware")
 
 const crmRouter = new express.Router()
@@ -44,5 +45,14 @@ crmRouter.put("/crm/task/update", jwtMiddleware, tasksController.updateTaskContr
 
 // delete task
 crmRouter.delete("/crm/task/delete/:id", jwtMiddleware, tasksController.deleteTaskController)
+
+// add note
+crmRouter.post("/crm/note/add", jwtMiddleware, noteController.addNoteController)
+
+// get all notes
+crmRouter.get("/crm/:id/note/:leadId", jwtMiddleware, noteController.getAllNotesController)
+
+// delete note
+crmRouter.delete("/crm/note/delete/:id", jwtMiddleware, noteController.deleteNoteController)
 
 module.exports = crmRouter

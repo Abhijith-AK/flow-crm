@@ -116,3 +116,18 @@ export const updateTaskAPI = async (reqHeader, reqBody) => {
 export const deleteTaskAPI = async (id, reqHeader) => {
     return await commonAPI("DELETE", `${SERVERURL}/api/crm/task/delete/${id}`, {}, reqHeader)
 }
+
+// add Note
+export const addNoteAPI = async (reqHeader, reqBody) => {
+    return await commonAPI("POST", `${SERVERURL}/api/crm/note/add`, reqBody, reqHeader)
+}
+
+// get all Note
+export const getAllNoteAPI = async (id, leadId, reqHeader) => {
+    return await commonAPI("GET", `${SERVERURL}/api/crm/${id}/note/${leadId}`, {}, reqHeader)
+}
+
+// delete Note
+export const deleteNoteAPI = async (id, reqHeader) => {
+    return await commonAPI("DELETE", `${SERVERURL}/api/crm/note/delete/${id}`, {}, reqHeader)
+}
