@@ -1,4 +1,4 @@
-import { ArrowBigLeft, Mail, Phone, Trash2Icon } from 'lucide-react'
+import { ArrowBigLeft, Edit, Mail, Phone, Trash2Icon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate, useParams } from 'react-router'
@@ -65,7 +65,7 @@ const LeadView = () => {
           style={{ backgroundColor: crm?.theme?.card.background }}
           className="w-full md:w-1/2 p-6 shadow-lg rounded-lg">
           <h1 className="text-2xl font-bold">{lead?.name.toUpperCase()}</h1>
-          <h2 style={{ color: crm?.theme?.text.secondary }} className="text-lg mt-1">Assigned To: {lead?.assignedTo.name}</h2>
+          <h2 style={{ color: crm?.theme?.text.secondary }} className="text-lg mt-1 flex  items-center">Assigned To: {lead?.assignedTo.name} <div className='btn btn-link'>Change<Edit size={18}/></div></h2>
 
           <div className="mt-6 p-4 border rounded-lg">
             <h3 className="text-2xl font-semibold mb-3">Details</h3>

@@ -135,7 +135,7 @@ const LeadsNotes = ({ crm, lead }) => {
                         >
                             <p className="text-sm break-words w-[90%]">{note.note}</p>
                             <div
-                                onClick={()=>handleDelete(note?._id)}
+                                onClick={() => handleDelete(note?._id)}
                                 className='p-2 bg-red-400 hover:bg-red-500 text-white rounded-full shadow-lg'>
                                 <Trash />
                             </div>
@@ -155,7 +155,7 @@ const LeadsNotes = ({ crm, lead }) => {
                             </div>
                             : <div className="border p-3 rounded-lg">
                                 <p className="text-sm">
-                                    No Notes added for the Lead
+                                    No notes have been added for this lead.
                                 </p>
                             </div>
                 }
