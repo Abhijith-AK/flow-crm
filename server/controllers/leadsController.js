@@ -49,7 +49,7 @@ exports.getALeadController = async (req, res) => {
 
 // update lead controller
 exports.updateLeadController = async (req, res) => {
-    const { id, crmId, name, email, status, revenue, assignedTo } = req.body;
+    const { _id: id, crmId, name, email, status, revenue, assignedTo } = req.body;
     try {
         const updateLead = await leads.findByIdAndUpdate(id, {
             name, email, status, crmId, revenue, assignedTo
