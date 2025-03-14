@@ -2,12 +2,12 @@ const leads = require("../models/leadModel");
 
 // add lead controller
 exports.addLeadController = async (req, res) => {
-    const { crmId, name, email, status, revenue, assignedTo } = req.body;
+    const { crmId, name, email, phoneno, status, revenue, assignedTo } = req.body;
     try {
         const existingCustomer = await leads.findOne({ crmId, email })
         if (existingCustomer) return res.status(406).json("Already Existing Customer with same Email!!")
         const newLead = new leads({
-            name, email, status, crmId, revenue, assignedTo: assignedTo ? assignedTo : null
+            name, email, phoneno, status, crmId, revenue, assignedTo: assignedTo ? assignedTo : null
         })
         if (newLead) {
             await newLead.save()

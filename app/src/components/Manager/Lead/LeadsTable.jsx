@@ -64,7 +64,7 @@ const LeadsTable = ({ search, leads }) => {
                         {selectedLeads?.length > 0 ? selectedLeads.map((lead) => (
                             <motion.tr
                                 style={{ border: `2px solid ${crm?.theme?.card.border}` }}
-                                key={lead.id}
+                                key={lead._id}
                                 className="border-b border-gray-50 transition"
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}

@@ -9,6 +9,10 @@ const leadSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    phoneno: {
+        type: String,
+        required: true
+    },
     status: {
         type: String,
         required: true

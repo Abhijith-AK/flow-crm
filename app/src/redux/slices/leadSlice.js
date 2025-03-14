@@ -9,7 +9,7 @@ const initialState = {
 }
 
 export const getLeads = createAsyncThunk(
-    "employee/getLeads",
+    "lead/getLeads",
     async (crmId, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");

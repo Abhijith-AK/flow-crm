@@ -5,6 +5,7 @@ import crmReducer from "./slices/crmSlice"
 import employeeReducer from "./slices/employeeSlice"
 import leadReducer from "./slices/leadSlice"
 import taskReducer from "./slices/taskSlice"
+import noteReducer from "./slices/noteSlice"
 
 export const crmStore = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const crmStore = configureStore({
         crm: crmReducer,
         employee: employeeReducer,
         lead: leadReducer,
-        task: taskReducer
+        task: taskReducer,
+        note: noteReducer
     }
 })

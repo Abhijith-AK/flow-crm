@@ -1,19 +1,19 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAllTaskAPI } from "../../services/allAPI";
+import { getAllNoteAPI } from "../../services/allAPI";
 
 
 const initialState = {
-    tasks: null,
+    notes: null,
     loading: false,
     error: null
 }
 
-export const getTasks = createAsyncThunk(
-    "task/getTasks",
-    async (crmId, { rejectWithValue }) => {
+export const getNotes = createAsyncThunk(
+    "note/getNotes",
+    async ({ crmId, leadId }, { rejectWithValue }) => {
         try {
             const token = localStorage.getItem("token");
-            const response = await getAllTaskAPI(crmId, {
+            const response = await getAllNoteAPI(crmId, leadId, {
                 "Authorization": `Bearer ${token}`
             });
             return response.data
@@ -23,25 +23,25 @@ export const getTasks = createAsyncThunk(
     }
 )
 
-const taskSlice = createSlice({
-    name: "task",
+const noteSlice = createSlice({
+    name: "note",
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(getTasks.pending, (state) => {
+            .addCase(getNotes.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(getTasks.fulfilled, (state, action) => {
+            .addCase(getNotes.fulfilled, (state, action) => {
                 state.loading = false;
-                state.tasks = action.payload;
+                state.notes = action.payload;
             })
-            .addCase(getTasks.rejected, (state, action) => {
+            .addCase(getNotes.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             })
     }
 })
 
-export default taskSlice.reducer
+export default noteSlice.reducer

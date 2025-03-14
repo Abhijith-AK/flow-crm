@@ -16,7 +16,7 @@ const ManagerTasks = () => {
   const { employees, loading, error } = useSelector((state) => state.employee);
   const { tasks: taskSet, loading: loadin2, error: error2 } = useSelector((state) => state.task);
   const [tasks, setTasks] = useState({});
-  console.log(tasks)
+  // console.log(tasks)
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -262,7 +262,7 @@ const ManagerTasks = () => {
 
                           {/* Header Section */}
                           <div className="flex justify-between items-center">
-                            <h1 className="text-xl font-semibold">{task.title}</h1>
+                            <h1 className="text-xl font-semibold truncate">{task.title.slice(0,20)}</h1>
                             <button className="px-2 py-1">
                               {task.priority === "high" ? (
                                 <span className="flex items-center text-sm gap-2 bg-red-600 text-white px-2 py-1 rounded-lg">
@@ -281,7 +281,7 @@ const ManagerTasks = () => {
                           </div>
 
                           {/* Description Section */}
-                          <p style={{ color: crm?.theme?.text.secondary }} className="text-md">{task.description.slice(0, 20)}...</p>
+                          <p style={{ color: crm?.theme?.text.secondary }} className="text-md truncate">{task.description.slice(0, 20)}...</p>
 
                           {/* Due Date & Progress Bar */}
                           <div className="flex flex-col gap-1">
