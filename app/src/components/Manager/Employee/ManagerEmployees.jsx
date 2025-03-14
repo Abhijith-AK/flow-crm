@@ -5,6 +5,7 @@ import EmployeesTable from './EmployeesTable';
 import { formValidator } from '../../../utils/FormValidator'
 import { deleteEmployeeAPI, registerEmployeeAPI, updateEmployeeAPI } from '../../../services/allAPI';
 import { getEmployees } from '../../../redux/slices/employeeSlice';
+import { getLeads } from '../../../redux/slices/leadSlice';
 
 const ManagerEmployees = () => {
   const [search, setSearch] = useState('');
@@ -14,6 +15,7 @@ const ManagerEmployees = () => {
   const { crm } = useSelector((state) => state.crm);
   const { employees, loading, error } = useSelector((state) => state.employee);
   const dispatch = useDispatch()
+  const { leads } = useSelector((state) => state.lead);
 
 
   useEffect(() => {
@@ -146,34 +148,45 @@ const ManagerEmployees = () => {
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    const confirm = window.confirm("Are you sure want to delete this employee??")
-    if (confirm) {
-      const reqHeader = {
-        "Authorization": `Bearer ${token}`
-      };
-      try {
-        const response = await deleteEmployeeAPI(formData._id ,reqHeader);
-        if (response.status === 200) {
-          alert("Employee Deleted!");
-          handleClose();
-          dispatch(getEmployees(crm._id));
-          setFormData({
-            name: "",
-            email: "",
-            password: "",
-            phoneno: "",
-          }); // Reset form
-        } else {
-          alert("failed: " + response.response.data);
-        }
-      } catch (error) {
-        console.error(error);
-        alert("Error: " + error);
-      }
-    } else {
+    const isDepended = leads.some((lead) => lead?.assignedTo._id === formData?._id)
+    if (isDepended) {
+      alert("This employee is assigned to a Lead. Please reassign them before deleting.");
       return;
+    } else {
+      const confirm = window.confirm("Are you sure want to delete this employee??")
+      if (confirm) {
+        const reqHeader = {
+          "Authorization": `Bearer ${token}`
+        };
+        try {
+          const response = await deleteEmployeeAPI(formData._id, reqHeader);
+          if (response.status === 200) {
+            alert("Employee Deleted!");
+            handleClose();
+            dispatch(getEmployees(crm._id));
+            setFormData({
+              name: "",
+              email: "",
+              password: "",
+              phoneno: "",
+            }); // Reset form
+          } else {
+            alert("failed: " + response.response.data);
+          }
+        } catch (error) {
+          console.error(error);
+          alert("Error: " + error);
+        }
+      } else {
+        return;
+      }
     }
   }
+
+  useEffect(() => {
+    dispatch(getLeads(crm._id));
+  }, [dispatch, employees])
+
   return (
     <div className='w-full min-h-screen'>
       <div className="flex flex-wrap md:flex-nowrap gap-4 justify-around p-3 m-3">
