@@ -28,7 +28,7 @@ const VerifyEmail = () => {
             alert("TimeOut!!");
             dispatch(setOtp("")); // Clear OTP
             dispatch(prevStep()); // Move back
-        }, 10000); // 10 minutes
+        }, 600000); // 10 minutes
     };
 
     useEffect(() => {
