@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux"
-import { PlusCircle } from 'lucide-react';
+import { LoaderCircle, PlusCircle } from 'lucide-react';
 import EmployeesTable from './EmployeesTable';
 import { formValidator } from '../../../utils/FormValidator'
 import { deleteEmployeeAPI, registerEmployeeAPI, updateEmployeeAPI } from '../../../services/allAPI';
@@ -9,11 +9,12 @@ import { getLeads } from '../../../redux/slices/leadSlice';
 
 const ManagerEmployees = () => {
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
   const [view, setView] = useState(false);
   const [update, setUpdate] = useState(false);
   const [toDelete, setToDelete] = useState(false);
   const { crm } = useSelector((state) => state.crm);
-  const { employees, loading, error } = useSelector((state) => state.employee);
+  const { employees } = useSelector((state) => state.employee);
   const dispatch = useDispatch()
   const { leads } = useSelector((state) => state.lead);
 
@@ -56,6 +57,7 @@ const ManagerEmployees = () => {
   };
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
 
     // Validate all fields before submission
@@ -72,6 +74,7 @@ const ManagerEmployees = () => {
 
     if (!isValid) {
       setErrors(newErrors);
+      setLoading(false)
       return;
     }
 
@@ -83,6 +86,7 @@ const ManagerEmployees = () => {
     try {
       const response = await registerEmployeeAPI(reqHeader, reqBody);
       if (response.status === 201) {
+        setLoading(false)
         alert("Employee Added!");
         handleClose();
         dispatch(getEmployees(crm._id));
@@ -94,14 +98,17 @@ const ManagerEmployees = () => {
         }); // Reset form
       } else {
         alert("Creation failed: " + response.response.data);
+        setLoading(false)
       }
     } catch (error) {
       console.error(error);
       alert("Error: " + error);
+      setLoading(false)
     }
   };
 
   const handleUpdate = async (e) => {
+    setLoading(true)
     e.preventDefault();
     // Validate all fields before submission
     let isValid = true;
@@ -116,6 +123,7 @@ const ManagerEmployees = () => {
     });
 
     if (!isValid) {
+      setLoading(false)
       setErrors(newErrors);
       return;
     }
@@ -128,6 +136,7 @@ const ManagerEmployees = () => {
     try {
       const response = await updateEmployeeAPI(formData._id, reqHeader, reqBody);
       if (response.status === 201) {
+        setLoading(false)
         alert("Employee Updated!");
         handleClose();
         dispatch(getEmployees(crm._id));
@@ -139,18 +148,22 @@ const ManagerEmployees = () => {
         }); // Reset form
       } else {
         alert("Creation failed: " + response.response.data);
+        setLoading(false)
       }
     } catch (error) {
       console.error(error);
       alert("Error: " + error);
+      setLoading(false)
     }
   }
 
   const handleDelete = async (e) => {
+    setLoading(true)
     e.preventDefault();
     const isDepended = leads.some((lead) => lead?.assignedTo._id === formData?._id)
     if (isDepended) {
       alert("This employee is assigned to a Lead. Please reassign them before deleting.");
+      setLoading(false)
       return;
     } else {
       const confirm = window.confirm("Are you sure want to delete this employee??")
@@ -161,6 +174,7 @@ const ManagerEmployees = () => {
         try {
           const response = await deleteEmployeeAPI(formData._id, reqHeader);
           if (response.status === 200) {
+            setLoading(false)
             alert("Employee Deleted!");
             handleClose();
             dispatch(getEmployees(crm._id));
@@ -172,12 +186,15 @@ const ManagerEmployees = () => {
             }); // Reset form
           } else {
             alert("failed: " + response.response.data);
+            setLoading(false)
           }
         } catch (error) {
           console.error(error);
           alert("Error: " + error);
+          setLoading(false)
         }
       } else {
+        setLoading(false)
         return;
       }
     }
@@ -293,19 +310,22 @@ const ManagerEmployees = () => {
               {!view && <button
                 style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
                 type="submit"
-                className="w-full py-2 rounded-md transition"
+                disabled={loading}
+                className="w-full py-2 rounded-md transition flex gap-2 justify-center"
               >
-                {update ? "Update" : "Create"} Employee
+                {update ? "Update" : "Create"} Employee {loading && <LoaderCircle className='animate-spin' />}
               </button>}
 
               {view && <button
                 onClick={() => setToDelete(true)}
                 style={{ backgroundColor: "red", color: "white" }}
+                disabled={loading}
                 type="submit"
-                className="w-full py-2 rounded-md transition"
+                className="w-full py-2 rounded-md transition flex gap-2 justify-center"
               >
-                Delete Employee
-              </button>}
+                Delete Employee {loading && <LoaderCircle className='animate-spin' />}
+              </button>
+              }
             </div>
           </form>
         </div>

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { nextStep, prevStep } from "../../redux/slices/registerSlice";
+import { nextStep, prevStep, setOtp } from "../../redux/slices/registerSlice";
 import { motion } from "framer-motion";
+import { registerVerifyEmailAPI } from "../../services/allAPI";
 
 const VerifyEmail = () => {
     const dispatch = useDispatch();
-    const { email } = useSelector((state) => state.register);
+    const { email, otp } = useSelector((state) => state.register);
     const [code, setCode] = useState(["", "", "", "", "", ""]);
     const [resendDisabled, setResendDisabled] = useState(false);
     const inputsRef = useRef([]);
@@ -16,6 +17,15 @@ const VerifyEmail = () => {
             inputsRef.current[0].focus();
         }
     }, []);
+
+    // timeOut
+    useEffect(() => {
+        setTimeout(() => {
+            alert("TimeOut!!")
+            dispatch(setOtp(""))
+            dispatch(prevStep())
+        }, 600000)
+    }, [])
 
     // Handle OTP Input
     const handleChange = (index, value) => {
@@ -38,10 +48,25 @@ const VerifyEmail = () => {
     };
 
     // Handle Resend
-    const handleResend = () => {
+    const handleResend = async () => {
         setResendDisabled(true);
         setTimeout(() => setResendDisabled(false), 30000); // Re-enable in 30s
+        const response = await registerVerifyEmailAPI({ email });
+        if (response.status === 200) dispatch(setOtp(response.data.otp))
     };
+    
+    // Handle Verify
+    const handleVerify = () => {
+        const userOtp = Number(code.toLocaleString().replaceAll(",", ""))
+        const verified = userOtp === otp
+        if (verified) {
+            alert("Verified")
+            dispatch(nextStep())
+        } else {
+            alert("Invalid Otp!")
+            setCode(["", "", "", "", "", ""])
+        }
+    }
 
     // Check if all fields are filled
     const isCodeComplete = code.every((digit) => digit !== "");
@@ -86,20 +111,24 @@ const VerifyEmail = () => {
                         maxLength="1"
                         onChange={(e) => handleChange(index, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(index, e)}
-                        className="w-12 h-12 text-center text-lg font-semibold bg-gray-700 border border-gray-600 rounded-lg outline-none focus:border-blue-500"
+                        className="w-12 h-12 text-center text-xl font-semibold bg-gray-700 border border-gray-600 rounded-lg outline-none focus:border-blue-500"
                         whileFocus={{ scale: 1.1 }}
                         transition={{ type: "spring", stiffness: 300 }}
                     />
                 ))}
             </motion.div>
 
+            <p className="mt-3 text-sm font-bold text-blue-300">
+                This OTP is valid for only <span className=" text-base font-extrabold text-red-400">10 minutes</span>
+            </p>
+
             {/* Verify Button */}
             <motion.button
-                onClick={() => dispatch(nextStep())}
+                onClick={handleVerify}
                 disabled={!isCodeComplete}
                 className={`mt-6 w-full py-3 text-lg font-medium rounded-lg ${isCodeComplete
-                        ? "bg-blue-700 hover:bg-blue-800 text-white"
-                        : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                    ? "bg-blue-700 hover:bg-blue-800 text-white"
+                    : "bg-gray-600 text-gray-400 cursor-not-allowed"
                     }`}
                 whileHover={isCodeComplete ? { scale: 1.05 } : {}}
                 transition={{ duration: 0.2 }}

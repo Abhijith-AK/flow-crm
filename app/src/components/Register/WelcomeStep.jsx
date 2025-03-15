@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { nextStep, setUserInfo } from "../../redux/slices/registerSlice";
+import { nextStep, setOtp, setUserInfo } from "../../redux/slices/registerSlice";
 import { motion } from "framer-motion";
 import AuthImagePattern from "../../utils/Patterns/AuthImagePattern";
 import { formValidator } from "../../utils/FormValidator";
@@ -45,6 +45,7 @@ const WelcomeStep = () => {
         setLoading(false);
 
         if (response.status === 200) {
+            dispatch(setOtp(response.data.otp))
             dispatch(nextStep());
         } else if (response.status === 401) {
             alert(response.response.data);

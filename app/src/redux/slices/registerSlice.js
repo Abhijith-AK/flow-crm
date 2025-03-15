@@ -4,6 +4,7 @@ const initialState = {
     name: "",
     email: "",
     password: "",
+    otp: "",
     step: 1
 }
 
@@ -21,10 +22,13 @@ const registerSlice = createSlice({
             state.name = action.payload.name !== undefined ? action.payload.name : state.name;
             state.email = action.payload.email !== undefined ? action.payload.email : state.email;
             state.password = action.payload.password !== undefined ? action.payload.password : state.password;
+        },
+        setOtp: (state, action) => {
+            state.otp = action.payload
         }
     }
 })
 
-export const { nextStep, prevStep, setUserInfo } = registerSlice.actions
+export const { nextStep, prevStep, setUserInfo, setOtp } = registerSlice.actions
 
 export default registerSlice.reducer
