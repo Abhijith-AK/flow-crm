@@ -8,6 +8,7 @@ const VerifyEmail = () => {
     const dispatch = useDispatch();
     const { email, otp } = useSelector((state) => state.register);
     const [code, setCode] = useState(["", "", "", "", "", ""]);
+    const timeoutId = useRef(null); // Store timeout in a ref
     const [resendDisabled, setResendDisabled] = useState(false);
     const inputsRef = useRef([]);
 
@@ -19,13 +20,21 @@ const VerifyEmail = () => {
     }, []);
 
     // timeOut
+    const startOtpTimeout = () => {
+        // Clear any existing timeout before starting a new one
+        if (timeoutId.current) clearTimeout(timeoutId.current);
+
+        timeoutId.current = setTimeout(() => {
+            alert("TimeOut!!");
+            dispatch(setOtp("")); // Clear OTP
+            dispatch(prevStep()); // Move back
+        }, 10000); // 10 minutes
+    };
+
     useEffect(() => {
-        setTimeout(() => {
-            alert("TimeOut!!")
-            dispatch(setOtp(""))
-            dispatch(prevStep())
-        }, 600000)
-    }, [])
+        startOtpTimeout(); 
+        return () => clearTimeout(timeoutId.current); // Cleanup on unmount
+    }, [dispatch])
 
     // Handle OTP Input
     const handleChange = (index, value) => {
@@ -50,11 +59,12 @@ const VerifyEmail = () => {
     // Handle Resend
     const handleResend = async () => {
         setResendDisabled(true);
+        startOtpTimeout();
         setTimeout(() => setResendDisabled(false), 30000); // Re-enable in 30s
         const response = await registerVerifyEmailAPI({ email });
         if (response.status === 200) dispatch(setOtp(response.data.otp))
     };
-    
+
     // Handle Verify
     const handleVerify = () => {
         const userOtp = Number(code.toLocaleString().replaceAll(",", ""))
