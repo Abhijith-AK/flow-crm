@@ -19,8 +19,7 @@ const dataSet = [
     { id: 10, name: "DealFlow", managedBy: "Jack Wilson", users: 130, category: "Marketing" },
 ];
 
-const CrmTable = () => {
-    const [search, setSearch] = useState('');
+const CrmTable = ({search}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
 
