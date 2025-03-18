@@ -12,10 +12,12 @@ export const getTasks = createAsyncThunk(
     "task/getTasks",
     async (crmId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = sessionStorage.getItem("token");
+            const user = JSON.parse(sessionStorage.getItem("user"));
             const response = await getAllTaskAPI(crmId, {
                 "Authorization": `Bearer ${token}`
             });
+            if (user.role === "employee") return response.data.filter((value) => value.assignedTo._id === user._id)
             return response.data
         } catch (error) {
             return rejectWithValue(error.response.data)

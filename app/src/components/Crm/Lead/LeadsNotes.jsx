@@ -11,7 +11,7 @@ const LeadsNotes = ({ crm, lead }) => {
     const [error, setError] = useState("")
     const dispatch = useDispatch()
     const { notes, loading, error: fetchErr } = useSelector((state) => state.note)
-    const token = localStorage.getItem("token")
+    const token = sessionStorage.getItem("token")
 
     useEffect(() => {
         if (crm, lead) {

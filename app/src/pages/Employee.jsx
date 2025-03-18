@@ -15,7 +15,7 @@ const Employee = () => {
   const [open, setOpen] = useState(window.innerWidth > 768);
   const [crmDetails, setCrmDetails] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
-  const token = localStorage.getItem("token")
+  const token = sessionStorage.getItem("token")
   const navigate = useNavigate()
   const getCRMDetails = async () => {
     if (token) {

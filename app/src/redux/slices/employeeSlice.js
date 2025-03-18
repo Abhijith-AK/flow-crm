@@ -12,7 +12,7 @@ export const getEmployees = createAsyncThunk(
     "employee/getEmployees",
     async (crmId, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = sessionStorage.getItem("token");
             const response = await getAllEmployeeAPI(crmId, {
                 "Authorization": `Bearer ${token}`
             });

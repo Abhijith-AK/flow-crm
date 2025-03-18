@@ -4,19 +4,6 @@ import { motion } from 'framer-motion';
 import { useSelector } from "react-redux"
 import { useNavigate } from 'react-router';
 
-const leadsData = [
-    { id: 1, name: "John Doe", email: "john@example.com", status: "New", assignedTo: "Alice Johnson" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", status: "In Progress", assignedTo: "Bob Smith" },
-    { id: 3, name: "Michael Brown", email: "michael@example.com", status: "Converted", assignedTo: "Charlie Davis" },
-    { id: 4, name: "Emily Davis", email: "emily@example.com", status: "New", assignedTo: "David White" },
-    { id: 5, name: "Chris Wilson", email: "chris@example.com", status: "Follow-up", assignedTo: "Eve Adams" },
-    { id: 6, name: "Olivia Taylor", email: "olivia@example.com", status: "In Progress", assignedTo: "Frank Miller" },
-    { id: 7, name: "Daniel Lee", email: "daniel@example.com", status: "New", assignedTo: "Grace Hall" },
-    { id: 8, name: "Sophia Martinez", email: "sophia@example.com", status: "Converted", assignedTo: "Hank Green" },
-    { id: 9, name: "Liam Anderson", email: "liam@example.com", status: "Follow-up", assignedTo: "Ivy Carter" },
-    { id: 10, name: "Emma Thomas", email: "emma@example.com", status: "New", assignedTo: "Jack Wilson" },
-];
-
 const LeadsTable = ({ search, leads }) => {
     const { crm } = useSelector((state) => state.crm)
     const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +15,7 @@ const LeadsTable = ({ search, leads }) => {
         lead.name.toLowerCase().includes(search.toLowerCase()) ||
         lead.email.toLowerCase().includes(search.toLowerCase()) ||
         lead.status.toLowerCase().includes(search.toLowerCase()) ||
-        lead.assignedTo.toLowerCase().includes(search.toLowerCase())
+        lead.assignedTo.toLowerCase?.().includes(search.toLowerCase())
     );
 
     // Pagination Logic

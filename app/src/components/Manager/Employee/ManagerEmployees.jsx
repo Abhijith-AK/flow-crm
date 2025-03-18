@@ -33,7 +33,7 @@ const ManagerEmployees = () => {
 
   const [errors, setErrors] = useState({});
 
-  const token = localStorage.getItem("token")
+  const token = sessionStorage.getItem("token")
 
   const handleChange = (key, value) => {
     setFormData({ ...formData, [key]: value });

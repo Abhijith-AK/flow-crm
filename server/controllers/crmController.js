@@ -22,7 +22,7 @@ exports.getCrmController = async (req, res) => {
     const { id } = req.params
     if (!id) return res.status(406).json("Invalid Request!!")
     try {
-        const crmDetails = await crm.findById(id)
+        const crmDetails = await crm.findById(id).populate("createdBy")
         if (!crmDetails) return res.status(406).json("Invalid Request!!")
         res.status(200).json(crmDetails)
     } catch (error) {

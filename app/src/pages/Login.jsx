@@ -43,8 +43,8 @@ const Login = () => {
         try {
             const response = await loginAPI(reqBody)
             if (response.status == 200) {
-                localStorage.setItem("user", JSON.stringify(response.data.user))
-                localStorage.setItem("token", response.data.token)
+                sessionStorage.setItem("user", JSON.stringify(response.data.user))
+                sessionStorage.setItem("token", response.data.token)
                 alert("Login Successfull");
                 const role = response.data.user.role
                 if (role === "manager" || role === "employee") {

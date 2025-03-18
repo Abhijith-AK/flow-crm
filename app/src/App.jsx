@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Landing from './pages/Landing'
 import { Route, Routes, useLocation } from 'react-router'
 import Login from './pages/Login'
@@ -46,18 +46,18 @@ const App = () => {
 
     let dynamicTitle = titles[path] || 'FlowCRM';
 
-    if (location.pathname.includes('/manager')) {
+    if (location.pathname.includes('/manager') || location.pathname.includes('/employee')) {
       dynamicTitle = `${title}`
     }
-    if (location.pathname.includes('manager/leads')) {
+    if (location.pathname.includes('manager/leads') || location.pathname.includes('/employee/leads')) {
       dynamicTitle = `${title} - Leads`
     } else if (location.pathname.includes('manager/team')) {
       dynamicTitle = `${title} - Team`
-    } else if (location.pathname.includes('manager/tasks')) {
+    } else if (location.pathname.includes('manager/tasks') || location.pathname.includes('/employee/tasks')) {
       dynamicTitle = `${title} - Tasks`
     } else if (location.pathname.includes('manager/settings')) {
       dynamicTitle = `${title} - Settings`
-    } else if (location.pathname.includes('manager/chat')) {
+    } else if (location.pathname.includes('manager/chat') || location.pathname.includes('/employee/chat')) {
       dynamicTitle = `${title} - Chat`
     }
 
@@ -79,20 +79,20 @@ const App = () => {
       {/* MANAGER */}
       <Route path='/crm/:id/manager' element={<Manager />}>
         <Route index element={<ManagerDasboard />} />
-        <Route path='leads' element={<Leads />} />
+        <Route path='leads' element={<Leads manager={true} />} />
         <Route path='team' element={<ManagerEmployees />} />
-        <Route path='tasks' element={<Tasks />} />
+        <Route path='tasks' element={<Tasks manager={true} />} />
         <Route path='settings' element={<ManagerSettings />} />
-        <Route path='chat' element={<Chat />} />
-        <Route path='leads/:leadId' element={<LeadView />} />
+        <Route path='chat' element={<Chat manager={true} />} />
+        <Route path='leads/:leadId' element={<LeadView manager={true} />} />
       </Route>
       {/* EMPLOYEE */}
       <Route path='/crm/:id/employee' element={<Employee />}>
         <Route index element={<EmployeeDashboard />} />
-        <Route path='leads' element={<Leads />} />
-        <Route path='tasks' element={<Tasks />} />
-        <Route path='chat' element={<Chat />} />
-        <Route path='leads/:leadId' element={<LeadView />} />
+        <Route path='leads' element={<Leads manager={false} />} />
+        <Route path='tasks' element={<Tasks manager={false} />} />
+        <Route path='chat' element={<Chat manager={false} />} />
+        <Route path='leads/:leadId' element={<LeadView manager={false} />} />
       </Route>
       <Route path='*' element={<Pnf />} />
     </Routes>

@@ -10,7 +10,7 @@ import KanbanBoard from '../../../utils/common/KanbanBoard';
 import DropColumn from '../../../utils/common/DropColumn';
 import DragCard from '../../../utils/common/DragCard';
 
-const Leads = () => {
+const Leads = ({ manager }) => {
   const [tasks, setTasks] = useState({
     new: [],
     contacted: [],
@@ -34,7 +34,7 @@ const Leads = () => {
   const { crm } = useSelector((state) => state.crm);
   const { employees, loading, error } = useSelector((state) => state.employee);
   const { leads, loading: loadung2, error: error2 } = useSelector((state) => state.lead);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     if (leads?.length) {
@@ -179,13 +179,13 @@ const Leads = () => {
               onChange={(e) => setSearch(e.target.value)}
               className="p-2 rounded-md text-black "
             />
-            <button
+            {manager && <button
               onClick={() => document.getElementById('my_modal_5').showModal()}
               style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
               className='py-2 px-4 rounded-lg shadow-lg flex items-center justify-between'
             >
               <PlusCircle size={30} className='mr-3' /> Create Lead
-            </button>
+            </button>}
           </div>
           <h1 className="text-2xl px-2">All Leads</h1>
           <div className="w-full p-3">
@@ -194,7 +194,7 @@ const Leads = () => {
           <div className="mt-5">
             <h1 className="text-2xl px-2">Lead Pipeline</h1>
             <h2 style={{ color: crm?.theme?.text.secondary }} className='text-xl px-2'>Drag & Drop to change the stages</h2>
-            { leads?.length > 0 ?
+            {leads?.length > 0 ?
               <KanbanBoard dragEndFn={onDragEnd}>
                 <div className="p-3 flex gap-2 overflow-x-auto">
                   {/* New Column */}
@@ -349,128 +349,130 @@ const Leads = () => {
                   </div>
                 </div>
               </KanbanBoard>
-              : <h1 style={{color: crm?.theme?.text.secondary}} className='text-center text-2xl my-10'>Create a Lead to view Pipeline</h1>
+              : <h1 style={{ color: crm?.theme?.text.secondary }} className='text-center text-2xl my-10'>{manager ?
+                "Create a Lead to view Pipeline" : "No Leads are currently assigned to You!"}</h1>
             }
           </div>
 
           {/* Modal for Creating Lead */}
-          <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
-            <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
-              <h1 className="text-xl font-bold mb-4">Create Lead</h1>
+          {manager &&
+            <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
+              <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
+                <h1 className="text-xl font-bold mb-4">Create Lead</h1>
 
-              <form className="space-y-4" onSubmit={handleSubmit}>
-                {/* Lead Name */}
-                <div>
-                  <label className="block text-sm font-medium">Lead Name</label>
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
-                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter lead name"
-                  />
-                  {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
-                </div>
+                <form className="space-y-4" onSubmit={handleSubmit}>
+                  {/* Lead Name */}
+                  <div>
+                    <label className="block text-sm font-medium">Lead Name</label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => handleChange("name", e.target.value)}
+                      className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter lead name"
+                    />
+                    {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
+                  </div>
 
-                {/* Email */}
-                <div>
-                  <label className="block text-sm font-medium">Email</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter email"
-                  />
-                  {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
-                </div>
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-medium">Email</label>
+                    <input
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleChange("email", e.target.value)}
+                      className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter email"
+                    />
+                    {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
+                  </div>
 
-                {/* Phone Number */}
-                <div>
-                  <label className="block text-sm font-medium">Phone Number</label>
-                  <input
-                    type="tel"
-                    value={formData.phoneno}
-                    onChange={(e) => handleChange("phoneno", e.target.value)}
-                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter phone number"
-                  />
-                  {errors.phoneno && <p className="text-red-500 text-xs">{errors.phoneno}</p>}
-                </div>
+                  {/* Phone Number */}
+                  <div>
+                    <label className="block text-sm font-medium">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={formData.phoneno}
+                      onChange={(e) => handleChange("phoneno", e.target.value)}
+                      className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter phone number"
+                    />
+                    {errors.phoneno && <p className="text-red-500 text-xs">{errors.phoneno}</p>}
+                  </div>
 
-                {/* Status Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium">Status</label>
-                  <select
-                    value={formData.status}
-                    onChange={(e) => handleChange("status", e.target.value)}
-                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="new">New</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="proposal">Proposal Sent</option>
-                    <option value="won">Closed - Won</option>
-                    <option value="lost">Closed - Lost</option>
-                  </select>
-                  {errors.status && <p className="text-red-500 text-xs">{errors.status}</p>}
-                </div>
+                  {/* Status Dropdown */}
+                  <div>
+                    <label className="block text-sm font-medium">Status</label>
+                    <select
+                      value={formData.status}
+                      onChange={(e) => handleChange("status", e.target.value)}
+                      className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="new">New</option>
+                      <option value="contacted">Contacted</option>
+                      <option value="proposal">Proposal Sent</option>
+                      <option value="won">Closed - Won</option>
+                      <option value="lost">Closed - Lost</option>
+                    </select>
+                    {errors.status && <p className="text-red-500 text-xs">{errors.status}</p>}
+                  </div>
 
-                {/* Assigned To Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium">Assigned To</label>
-                  <select
-                    value={formData.assignedTo || ""}
-                    onChange={(e) => handleChange("assignedTo", e.target.value)}
-                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="" disabled>Select an employee</option>
-                    {employees.map((employee) => (
-                      <option key={employee._id} value={employee._id}>
-                        {employee.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.assignedTo && <p className="text-red-500 text-xs">{errors.assignedTo}</p>}
-                </div>
+                  {/* Assigned To Dropdown */}
+                  <div>
+                    <label className="block text-sm font-medium">Assigned To</label>
+                    <select
+                      value={formData.assignedTo || ""}
+                      onChange={(e) => handleChange("assignedTo", e.target.value)}
+                      className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="" disabled>Select an employee</option>
+                      {employees.map((employee) => (
+                        <option key={employee._id} value={employee._id}>
+                          {employee.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.assignedTo && <p className="text-red-500 text-xs">{errors.assignedTo}</p>}
+                  </div>
 
 
-                {/* Possible Revenue */}
-                <div>
-                  <label className="block text-sm font-medium">Possible Revenue</label>
-                  <input
-                    type="number"
-                    value={formData.revenue}
-                    onChange={(e) => handleChange("revenue", e.target.value)}
-                    className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter expected revenue"
-                  />
-                  {errors.revenue && <p className="text-red-500 text-xs">{errors.revenue}</p>}
-                </div>
+                  {/* Possible Revenue */}
+                  <div>
+                    <label className="block text-sm font-medium">Possible Revenue</label>
+                    <input
+                      type="number"
+                      value={formData.revenue}
+                      onChange={(e) => handleChange("revenue", e.target.value)}
+                      className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      placeholder="Enter expected revenue"
+                    />
+                    {errors.revenue && <p className="text-red-500 text-xs">{errors.revenue}</p>}
+                  </div>
 
-                <div className='flex gap-5'>
-                  {/* Close Button */}
-                  <button
-                    style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
-                    type="button"
-                    onClick={handleClose}
-                    className="w-full py-2 rounded-md transition"
-                  >
-                    Close
-                  </button>
+                  <div className='flex gap-5'>
+                    {/* Close Button */}
+                    <button
+                      style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
+                      type="button"
+                      onClick={handleClose}
+                      className="w-full py-2 rounded-md transition"
+                    >
+                      Close
+                    </button>
 
-                  {/* Submit Button */}
-                  <button
-                    style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
-                    type="submit"
-                    className="w-full py-2 rounded-md transition"
-                  >
-                    Create Lead
-                  </button>
-                </div>
-              </form>
-            </div>
-          </dialog>
-
+                    {/* Submit Button */}
+                    <button
+                      style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
+                      type="submit"
+                      className="w-full py-2 rounded-md transition"
+                    >
+                      Create Lead
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </dialog>
+          }
         </div>
       </div>
     );

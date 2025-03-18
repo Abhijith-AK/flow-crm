@@ -12,7 +12,7 @@ export const getNotes = createAsyncThunk(
     "note/getNotes",
     async ({ crmId, leadId }, { rejectWithValue }) => {
         try {
-            const token = localStorage.getItem("token");
+            const token = sessionStorage.getItem("token");
             const response = await getAllNoteAPI(crmId, leadId, {
                 "Authorization": `Bearer ${token}`
             });
