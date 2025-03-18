@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getEmployees } from '../../../redux/slices/employeeSlice'
 
-const ManagerChat = () => {
+const Chat = () => {
   const { crm } = useSelector((state) => state.crm)
   const { employees, loading, error } = useSelector((state) => state.employee);
   const dispatch = useDispatch()
@@ -49,4 +49,4 @@ const ManagerChat = () => {
   )
 }
 
-export default ManagerChat
+export default Chat

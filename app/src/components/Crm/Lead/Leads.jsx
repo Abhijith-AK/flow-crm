@@ -10,7 +10,7 @@ import KanbanBoard from '../../../utils/common/KanbanBoard';
 import DropColumn from '../../../utils/common/DropColumn';
 import DragCard from '../../../utils/common/DragCard';
 
-const ManagerLeads = () => {
+const Leads = () => {
   const [tasks, setTasks] = useState({
     new: [],
     contacted: [],
@@ -481,4 +481,4 @@ const ManagerLeads = () => {
   }
 };
 
-export default ManagerLeads;
+export default Leads;

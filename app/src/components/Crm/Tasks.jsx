@@ -11,7 +11,7 @@ import { addTaskAPI, deleteTaskAPI, updateTaskAPI } from "../../services/allAPI"
 import { getTasks } from "../../redux/slices/taskSlice"
 import { getEmployees } from "../../redux/slices/employeeSlice"
 
-const ManagerTasks = () => {
+const Tasks = () => {
   const { crm } = useSelector((state) => state.crm)
   const { employees, loading, error } = useSelector((state) => state.employee);
   const { tasks: taskSet, loading: loadin2, error: error2 } = useSelector((state) => state.task);
@@ -423,4 +423,4 @@ const ManagerTasks = () => {
   }
 }
 
-export default ManagerTasks
+export default Tasks

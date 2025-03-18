@@ -1,5 +1,4 @@
 import { CircleUser, LayoutDashboard, ListTodo, MessageCircle, Settings, Users } from 'lucide-react'
-import React from 'react'
 import { NavLink } from 'react-router'
 
 const TopNavBar = ({ theme, id, name }) => {

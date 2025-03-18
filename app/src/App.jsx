@@ -13,13 +13,14 @@ import Payments from './components/Admin/Payments'
 import Complaints from './components/Admin/Complaints'
 import CrmView from './components/Admin/CrmView'
 import ManagerDasboard from './components/Manager/ManagerDasboard'
-import ManagerLeads from './components/Manager/Lead/ManagerLeads'
 import ManagerEmployees from './components/Manager/Employee/ManagerEmployees'
-import ManagerTasks from './components/Manager/ManagerTasks'
 import ManagerSettings from './components/Manager/ManagerSettings'
-import ManagerChat from './components/Manager/Chat/ManagerChat'
 import { useSelector } from 'react-redux'
-import LeadView from './components/Manager/Lead/LeadView'
+import LeadView from './components/Crm/Lead/LeadView'
+import EmployeeDashboard from './components/Employee/EmployeeDashboard'
+import Leads from './components/Crm/Lead/Leads'
+import Tasks from './components/Crm/Tasks'
+import Chat from './components/Crm/Chat/Chat'
 
 const App = () => {
   const location = useLocation()
@@ -78,16 +79,20 @@ const App = () => {
       {/* MANAGER */}
       <Route path='/crm/:id/manager' element={<Manager />}>
         <Route index element={<ManagerDasboard />} />
-        <Route path='leads' element={<ManagerLeads />} />
+        <Route path='leads' element={<Leads />} />
         <Route path='team' element={<ManagerEmployees />} />
-        <Route path='tasks' element={<ManagerTasks />} />
+        <Route path='tasks' element={<Tasks />} />
         <Route path='settings' element={<ManagerSettings />} />
-        <Route path='chat' element={<ManagerChat />} />
+        <Route path='chat' element={<Chat />} />
         <Route path='leads/:leadId' element={<LeadView />} />
       </Route>
       {/* EMPLOYEE */}
       <Route path='/crm/:id/employee' element={<Employee />}>
-
+        <Route index element={<EmployeeDashboard />} />
+        <Route path='leads' element={<Leads />} />
+        <Route path='tasks' element={<Tasks />} />
+        <Route path='chat' element={<Chat />} />
+        <Route path='leads/:leadId' element={<LeadView />} />
       </Route>
       <Route path='*' element={<Pnf />} />
     </Routes>
