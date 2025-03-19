@@ -131,3 +131,8 @@ export const getAllNoteAPI = async (id, leadId, reqHeader) => {
 export const deleteNoteAPI = async (id, reqHeader) => {
     return await commonAPI("DELETE", `${SERVERURL}/api/crm/note/delete/${id}`, {}, reqHeader)
 }
+
+// delete crm
+export const deleteCrmAPI = async (id, reqHeader) => {
+    return await commonAPI("DELETE", `${SERVERURL}/api/delete-crm/${id}`, {}, reqHeader)
+}

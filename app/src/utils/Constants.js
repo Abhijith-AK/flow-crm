@@ -41,6 +41,12 @@ export const faqs = [
     { question: "Do you offer customer support?", answer: "Yes, our support team is available 24/7 to assist you with any queries or issues you may have." }
 ];
 
+export const layouts = [
+    { name: "Sidebar Focused", id: "sidebar" },
+    { name: "Top Navigation", id: "topnav" },
+    { name: "Bottom Navigation", id: "grid" },
+];
+
 export const themes = [
     {
         name: "Corporate Blue",

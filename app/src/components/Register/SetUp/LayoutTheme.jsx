@@ -5,14 +5,8 @@ import LayoutTwo from "../Layouts/LayoutTwo";
 import LayoutThree from "../Layouts/LayoutThree";
 import { useDispatch } from "react-redux";
 import { nextSetupStep, prevSetupStep, setLayoutTheme } from "../../../redux/slices/setupSlice";
-import { themes } from "../../../utils/Constants";
+import { layouts, themes } from "../../../utils/Constants";
 
-
-const layouts = [
-  { name: "Sidebar Focused", id: "sidebar" },
-  { name: "Top Navigation", id: "topnav" },
-  { name: "Bottom Navigation", id: "grid" },
-];
 
 const LayoutTheme = () => {
   const [selectedTheme, setSelectedTheme] = useState(themes[0]);

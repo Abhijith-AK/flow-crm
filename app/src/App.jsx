@@ -8,7 +8,6 @@ import Admin from './pages/Admin'
 import Manager from './pages/Manager'
 import Employee from './pages/Employee'
 import AdminDashboard from './components/Admin/AdminDashboard'
-import CrmManagement from './components/Admin/crmManagement'
 import Payments from './components/Admin/Payments'
 import Complaints from './components/Admin/Complaints'
 import CrmView from './components/Admin/CrmView'
@@ -21,6 +20,8 @@ import EmployeeDashboard from './components/Employee/EmployeeDashboard'
 import Leads from './components/Crm/Lead/Leads'
 import Tasks from './components/Crm/Tasks'
 import Chat from './components/Crm/Chat/Chat'
+import Unauthorized from './pages/Unauthorized'
+import CrmManagement from './components/Admin/CrmManagement'
 
 const App = () => {
   const location = useLocation()
@@ -40,6 +41,8 @@ const App = () => {
       '/admin/crm': 'CRM Management',
       '/admin/bills': 'Payments',
       '/admin/requests': 'Complaints',
+      '/pnf': "Page Not Found - 404",
+      '/unauth': "UnAuthorized - 403"
     };
 
     const path = location.pathname;
@@ -94,6 +97,7 @@ const App = () => {
         <Route path='chat' element={<Chat manager={false} />} />
         <Route path='leads/:leadId' element={<LeadView manager={false} />} />
       </Route>
+      <Route path='/unauth' element={<Unauthorized />} />
       <Route path='*' element={<Pnf />} />
     </Routes>
   )

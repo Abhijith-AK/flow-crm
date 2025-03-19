@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import TopNavBar from '../components/Manager/Layout/TopNavBar'
 import SideNavBar from '../components/Manager/Layout/SideNavBar'
 import { Outlet, useNavigate, useParams } from 'react-router'
@@ -6,7 +6,7 @@ import BottomNavBar from '../components/Manager/Layout/BottomNavBar'
 import { getCRMAPI } from '../services/allAPI'
 import { useDispatch } from "react-redux"
 import { setCrm } from '../redux/slices/crmSlice'
-import {motion} from "framer-motion"
+import { motion } from "framer-motion"
 import { Slash } from 'lucide-react'
 
 const Manager = () => {
@@ -39,11 +39,9 @@ const Manager = () => {
       } catch (error) {
         console.log(error)
         navigate('/pnf')
-        setIsLoading(false)
       }
     } else {
-      navigate('/pnf')
-      setIsLoading(false)
+      navigate('/unauth')
     }
   }
 
@@ -58,7 +56,7 @@ const Manager = () => {
   }, []);
 
   return isLoading ? (
-   <div className='flex justify-center items-center bg-gray-800 min-h-screen'>
+    <div className='flex justify-center items-center bg-gray-800 min-h-screen'>
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -67,7 +65,7 @@ const Manager = () => {
       >
         Loading Your Page.. <Slash className="animate-spin" size={20} />
       </motion.h1>
-   </div>
+    </div>
   ) : (
     <div style={{ backgroundColor: crmDetails?.theme.background, color: crmDetails?.theme.text.primary }} className='flex flex-col min-h-screen w-full'>
       {crmDetails?.layout === "Top Navigation" && <TopNavBar name={crmDetails?.name} id={id} theme={crmDetails?.theme.navbar} />}
