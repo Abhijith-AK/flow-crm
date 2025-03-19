@@ -136,3 +136,8 @@ export const deleteNoteAPI = async (id, reqHeader) => {
 export const deleteCrmAPI = async (id, reqHeader) => {
     return await commonAPI("DELETE", `${SERVERURL}/api/delete-crm/${id}`, {}, reqHeader)
 }
+
+// update crm
+export const updateCrmAPI = async (reqHeader, reqBody) => {
+    return await commonAPI("PUT", `${SERVERURL}/api/crm/update`, reqBody, reqHeader)
+}

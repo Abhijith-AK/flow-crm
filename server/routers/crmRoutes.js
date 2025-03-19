@@ -13,6 +13,9 @@ crmRouter.get("/crm/:id", jwtMiddleware, crmController.getCrmController)
 // get all crm
 crmRouter.get("/all-crm", jwtMiddleware, crmController.getAllCrmController)
 
+// update crm
+crmRouter.put("/crm/update", jwtMiddleware, crmController.updateCrmController)
+
 // delete task
 crmRouter.delete("/delete-crm/:crmId", jwtMiddleware, crmController.deleteCrmController)
 

@@ -42,6 +42,7 @@ const ManagerEmployees = () => {
     const validation = formValidator(key, value);
     setErrors((prev) => ({ ...prev, [key]: validation.validation ? "" : validation.message }));
   };
+  
   const handleClose = () => {
     document.getElementById('my_modal_5').close();
     setFormData({

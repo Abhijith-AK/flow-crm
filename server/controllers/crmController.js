@@ -51,6 +51,23 @@ exports.getAllCrmController = async (req, res) => {
     }
 }
 
+// update Crm controller
+exports.updateCrmController = async (req, res) => {
+    const { _id: id, name, type, workflows, layout, theme, createdBy } = req.body;
+    try {
+        const updateCrm = await crm.findByIdAndUpdate(id, {
+            name, type, workflows, layout, theme, createdBy
+        }, { new: true })
+        if (updateCrm) {
+            res.status(200).json(updateCrm)
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside updateCrmController", error)
+    }
+}
+
+
 // delete CRM
 exports.deleteCrmController = async (req, res) => {
     const { crmId } = req.params;

@@ -4,12 +4,14 @@ import { ArrowBigLeft, CheckCircle } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCrm, resetCrms } from '../../redux/slices/crmSlice';
-import { deleteCrmAPI } from '../../services/allAPI';
+import { deleteCrmAPI, updateCrmAPI } from '../../services/allAPI';
+import { layouts, themes } from '../../utils/Constants';
 
 const CrmView = () => {
     const [usersVisible, setUsersVisible] = useState(false);
     const [selected, setSelected] = useState(null)
     const [choices, setChoices] = useState([]);
+    const [updateT, setUpdateT] = useState(false);
     const navigate = useNavigate()
     const { crms, loading } = useSelector((state) => state.crm)
     const crmId = useParams().crmId
@@ -18,7 +20,6 @@ const CrmView = () => {
 
     const crm = crms?.find((value) => value?._id === crmId)
     useEffect(() => { dispatch(getAllCrm()) }, [dispatch])
-
 
     const handleDelete = async () => {
         const confirm = window.confirm("Are you sure want to delete this CRM??")
@@ -41,13 +42,39 @@ const CrmView = () => {
             return;
         }
     }
-    
+
     const handleSelect = (selectedId) => {
         setSelected(selectedId)
     }
 
     const handleClose = () => {
+        setUpdateT(false)
+        setChoices([])
         document.getElementById("my_modal_11").close()
+    }
+
+    const handleChange = async () => {
+        const reqHeader = {
+            "Authorization": `Bearer ${token}`
+        };
+        const reqBody = { ...crm, [updateT ? "theme" : "layout"] : selected };
+        try {
+            const response = await updateCrmAPI(reqHeader, reqBody);
+            if (response.status === 200) {
+                // setLoading(false)
+                alert("Layout Updated!");
+                handleClose();
+                dispatch(resetCrms());
+                dispatch(getAllCrm())
+            } else {
+                alert("Updation failed: " + response.data);
+                // setLoading(false)
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Error: " + error.response.data);
+            //   setLoading(false)
+        }
     }
 
     return (
@@ -90,13 +117,24 @@ const CrmView = () => {
                 <h1 className='text-xl font-bold'>Settings</h1>
 
                 <div
-                    onClick={() => document.getElementById("my_modal_11").showModal()}
+                    onClick={() => {
+                        setUpdateT(true)
+                        setSelected(crm?.theme)
+                        setChoices(themes)
+                        document.getElementById("my_modal_11").showModal()
+                    }}
                     className='p-4 my-3 bg-gray-800 rounded-lg'>
                     <h1 className='text-lg font-semibold'>Change Theme</h1>
                     <p className='text-gray-300'>Selected theme: {crm?.theme?.name}</p>
                 </div>
 
-                <div className='p-4 my-3 bg-gray-800 rounded-lg'>
+                <div
+                    onClick={() => {
+                        setSelected(crm?.layout)
+                        setChoices(layouts)
+                        document.getElementById("my_modal_11").showModal()
+                    }}
+                    className='p-4 my-3 bg-gray-800 rounded-lg'>
                     <h1 className='text-lg font-semibold'>Change Layout</h1>
                     <p className='text-gray-300'>Selected layout: {crm?.layout}</p>
                 </div>
@@ -113,22 +151,22 @@ const CrmView = () => {
 
             <dialog id="my_modal_11" className="modal modal-bottom sm:modal-middle">
                 <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
-                    <h1 className="text-xl font-bold mb-4">Change Employee</h1>
+                    <h1 style={{ color: crm?.theme?.card?.text }} className="text-xl font-bold mb-4">Change { updateT ? "Theme" : "Layout" }</h1>
                     <div className="space-y-4 text-center">
                         {
                             choices?.length > 0 ?
                                 choices.map((choice, i) => (
                                     <div
-                                        // onClick={() => handleSelect(choice._id)}
+                                        onClick={() => updateT ? handleSelect(choice) : handleSelect(choice.name)}
                                         key={i}
                                         style={{
                                             background: crm?.theme?.navbar.background,
-                                            outline: choice._id === selected && `2px solid ${crm?.theme?.navbar.accent}`,
+                                            outline: choice.name === (updateT ? selected.name : selected) && `2px solid ${crm?.theme?.navbar.accent}`,
                                             color: crm?.theme?.navbar.text
                                         }}
                                         className='w-full my-3 px-5 py-2 text-center text-2xl rounded-lg shadow-lg flex items-start'>
                                         <p className='flex-1'>{choice.name}</p>
-                                        {choice._id === selected && <CheckCircle className='text-right' />}
+                                        {choice.name === (updateT ? selected.name : selected) && <CheckCircle className='text-right' />}
                                     </div>
                                 ))
                                 : <div className="text-center"> Loading ...</div>
@@ -148,7 +186,7 @@ const CrmView = () => {
                             {/* Submit Button */}
                             <button
                                 style={{ backgroundColor: crm?.theme?.navbar.accent, color: crm?.theme?.navbar.text }}
-                                type="submit"
+                                onClick={handleChange}
                                 className="w-full py-2 rounded-md transition"
                             >
                                 Save Changes
