@@ -34,7 +34,9 @@ const Chat = ({ manager }) => {
           {
             employees?.length > 0 ?
               employees.map(employee => (
-                <div className="flex items-center  mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
+                <div
+                  key={employee._id}
+                  className="flex items-center  mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
                   style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}>
                   <MessageCircleDashed size={30} />
                   <div className="text-3xl mb-2 flex flex-wrap md:flex-nowrap w-full justify-center items-center gap-2">

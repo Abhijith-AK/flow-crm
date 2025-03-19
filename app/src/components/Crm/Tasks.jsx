@@ -47,7 +47,7 @@ const Tasks = ({ manager }) => {
 
   const onDragEnd = async (result) => {
     if (!result.destination) return;
-    console.log(result)
+    // console.log(result)
     const { source, destination } = result;
     const sourceColId = source.droppableId;
     const destColId = destination.droppableId;
@@ -141,7 +141,7 @@ const Tasks = ({ manager }) => {
     }
 
     // Submit Task Logic Here (e.g., API call)
-    console.log("Task Submitted:", formData);
+    // console.log("Task Submitted:", formData);
     const reqBody = formData;
     const reqHeader = {
       "Authorization": `Bearer ${token}`
@@ -214,7 +214,7 @@ const Tasks = ({ manager }) => {
   };
 
   const stats = [
-    { title: "Total No of Tasks", content: taskSet?.length, icon: ListTodo },
+    { title: "Total No of Tasks", content: taskSet?.length || 0, icon: ListTodo },
     { title: "Pending", content: tasks[crm?.workflows[0]]?.length || 0, icon: Hourglass },
     {
       title: "In Progress",
@@ -249,6 +249,7 @@ const Tasks = ({ manager }) => {
             <div className="p-3 flex gap-2 overflow-x-auto">
               {crm?.workflows?.map((value, i) => (
                 <div
+                  key={i}
                   style={{ backgroundColor: crm?.theme?.card.background }}
                   className="m-3 p-2 text-center w-full rounded-lg shadow-lg">
                   <div className="flex justify-around items-center mb-4"><h1 className='text-2xl'>{value}</h1> {manager && <button onClick={() => handleOpen(value)}><PlusCircle /></button>} </div>
@@ -258,8 +259,8 @@ const Tasks = ({ manager }) => {
                         <DragCard key={task._id} cardId={task._id} index={index}>
                           <div
                             onClick={() => {
-                              document.getElementById("my_modal_3").showModal()
                               setFormData(task)
+                              document.getElementById("my_modal_3").showModal()
                               setShow(true)
                             }}
                             style={{ backgroundColor: crm?.theme?.card.background }}
@@ -368,7 +369,7 @@ const Tasks = ({ manager }) => {
               <div>
                 <label className="block text-sm font-medium">Assigned To</label>
                 <select
-                  value={formData.assignedTo || ""}
+                  value={formData.assignedTo._id || ""}
                   onChange={(e) => handleChange("assignedTo", e.target.value)}
                   disabled={show}
                   className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
