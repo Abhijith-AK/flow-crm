@@ -141,3 +141,13 @@ export const deleteCrmAPI = async (id, reqHeader) => {
 export const updateCrmAPI = async (reqHeader, reqBody) => {
     return await commonAPI("PUT", `${SERVERURL}/api/crm/update`, reqBody, reqHeader)
 }
+
+// delete crm
+export const deactivateCrmAPI = async (id, reqHeader) => {
+    return await commonAPI("DELETE", `${SERVERURL}/api/deactivate/${id}`, {}, reqHeader)
+}
+
+// update crm
+export const updateCrmActivateAPI = async (reqHeader, reqBody) => {
+    return await commonAPI("PUT", `${SERVERURL}/api/crm/update-ac`, reqBody, reqHeader)
+}

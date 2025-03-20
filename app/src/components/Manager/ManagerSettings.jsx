@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from "react-redux"
 import { CheckCircle, Layout, LayoutTemplate, LucideStickyNote, Mail, Paintbrush, Trash2Icon } from "lucide-react"
 import { useState } from "react"
-import { deleteCrmAPI, updateCrmAPI } from "../../services/allAPI"
+import { deactivateCrmAPI, deleteCrmAPI, updateCrmAPI } from "../../services/allAPI"
 import { useNavigate } from "react-router"
 import { layouts, themes } from "../../utils/Constants"
+import { resetCrms } from "../../redux/slices/crmSlice"
 const ManagerSettings = () => {
   const { crm } = useSelector((state) => state.crm)
   const token = sessionStorage.getItem("token")
@@ -47,25 +48,26 @@ const ManagerSettings = () => {
   }
 
   const handleDelete = async () => {
-    // const confirm = window.confirm("Are you sure want to delete this CRM??")
-    // if (confirm) {
-    //   const reqHeader = {
-    //     "Authorization": `Bearer ${token}`
-    //   };
-    //   try {
-    //     const response = await deleteCrmAPI(crmId, reqHeader);
-    //     if (response.status === 200) {
-    //       alert(response.data.message);
-    //       dispatch(resetCrms());
-    //       navigate(-1)
-    //     }
-    //   } catch (error) {
-    //     console.error(error);
-    //     alert("Error: " + error?.response?.data?.message);
-    //   }
-    // } else {
-    //   return;
-    // }
+    const confirm = window.confirm("Are you sure want to delete this CRM??")
+    if (confirm) {
+      const reqHeader = {
+        "Authorization": `Bearer ${token}`
+      };
+      try {
+        const response = await deactivateCrmAPI(crm?._id, reqHeader);
+        if (response.status === 200) {
+          alert(response.data.message);
+          dispatch(resetCrms());
+          sessionStorage.clear()
+          navigate("/pnf")
+        }
+      } catch (error) {
+        console.error(error);
+        alert("Error: " + error?.response?.data?.message);
+      }
+    } else {
+      return;
+    }
   }
 
   return (

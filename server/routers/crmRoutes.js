@@ -16,8 +16,14 @@ crmRouter.get("/all-crm", jwtMiddleware, crmController.getAllCrmController)
 // update crm
 crmRouter.put("/crm/update", jwtMiddleware, crmController.updateCrmController)
 
+// update crmActivated
+crmRouter.put("/crm/update-ac", jwtMiddleware, crmController.updateCrmActivateController)
+
 // delete task
 crmRouter.delete("/delete-crm/:crmId", jwtMiddleware, crmController.deleteCrmController)
+
+// deactivate task
+crmRouter.delete("/deactivate/:crmId", jwtMiddleware, crmController.deactivateCrmController)
 
 // add lead
 crmRouter.post("/crm/lead/add", jwtMiddleware, leadsController.addLeadController)

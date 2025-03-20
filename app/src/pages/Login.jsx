@@ -1,8 +1,8 @@
 import { useState } from "react";
 import AuthImagePattern from "../utils/Patterns/AuthImagePattern";
-import { Link, useNavigate } from "react-router"; 
+import { Link, useNavigate } from "react-router";
 import { formValidator } from "../utils/FormValidator";
-import { loginAPI } from "../services/allAPI";
+import { loginAPI, updateCrmActivateAPI } from "../services/allAPI";
 import { LoaderCircle } from "lucide-react";
 
 const Login = () => {
@@ -21,7 +21,7 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const validateEmail = formValidator("email", credentials.email);
         const validatePassword = formValidator("password", credentials.password);
 
@@ -36,8 +36,8 @@ const Login = () => {
         setLoading(true)
 
         const reqBody = {
-            email : credentials.email,
-            password : credentials.password
+            email: credentials.email,
+            password: credentials.password
         }
 
         try {
@@ -48,6 +48,12 @@ const Login = () => {
                 alert("Login Successfull");
                 const role = response.data.user.role
                 if (role === "manager" || role === "employee") {
+                    if (role === "manager") {
+                        const token = sessionStorage.getItem("token")
+                        await updateCrmActivateAPI({
+                            "Authorization": `Bearer ${token}`
+                        }, { id: response.data.user._id })
+                    }
                     const id = response.data.user.crmId
                     navigate(`/crm/${id}/${role}`)
                 } else if (role === "admin") {
@@ -60,7 +66,7 @@ const Login = () => {
                 setLoading(false)
             }
         } catch (error) {
-            alert(error.response.message)
+            alert(error)
             setLoading(false)
         }
     };

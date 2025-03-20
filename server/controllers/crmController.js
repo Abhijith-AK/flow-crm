@@ -67,6 +67,53 @@ exports.updateCrmController = async (req, res) => {
     }
 }
 
+// update Crm controller
+exports.updateCrmActivateController = async (req, res) => {
+    const { id } = req.body;
+    try {
+        let updateCrm;
+        const uCrm = await crm.findOne({ createdBy: id })
+        if (uCrm.deactivated) {
+            updateCrm = await crm.findByIdAndUpdate(uCrm._id, {
+                deactivated: false
+            }, { new: true })
+        }
+        if (updateCrm) {
+            res.status(200).json(updateCrm)
+            console.log("activated")
+        } else {
+            res.status(200).json("good")
+            console.log(uCrm.deactivated)
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside updateCrmActivateController", error)
+    }
+}
+
+// deactivate CRM
+exports.deactivateCrmController = async (req, res) => {
+    const { crmId } = req.params;
+
+    try {
+        const updatedCrm = await crm.findByIdAndUpdate(crmId, {
+            deactivated: true,
+            deactivationDate: new Date()
+        }, { new: true });
+
+        if (!updatedCrm) {
+            return res.status(404).json({ message: "CRM not found" });
+        }
+
+        res.status(200).json({
+            message: "Your CRM is deactivated and will be deleted in 3 days unless reactivated."
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+        console.error("Error inside deactivateCrmController", error);
+    }
+};
 
 // delete CRM
 exports.deleteCrmController = async (req, res) => {

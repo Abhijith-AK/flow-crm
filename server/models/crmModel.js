@@ -26,6 +26,11 @@ const crmSchema = new mongoose.Schema({
         ref: "users",
         required: true
     },
+    deactivated: {
+        type: Boolean,
+        default: false
+    },
+    deactivationDate: Date
 }, {timestamps: true})
 
 const crm = mongoose.model("crms", crmSchema)
