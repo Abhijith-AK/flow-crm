@@ -57,7 +57,7 @@ const CrmView = () => {
         const reqHeader = {
             "Authorization": `Bearer ${token}`
         };
-        const reqBody = { ...crm, [updateT ? "theme" : "layout"] : selected };
+        const reqBody = { ...crm, [updateT ? "theme" : "layout"]: selected };
         try {
             const response = await updateCrmAPI(reqHeader, reqBody);
             if (response.status === 200) {
@@ -82,6 +82,11 @@ const CrmView = () => {
             <Link onClick={() => navigate(-1)} className="flex p-3 rounded max-w-[200px] gap-2 bg-blue-900 text-white mb-6"> <ArrowBigLeft size={30} /> Go Back </Link>
             <h1 className='text-3xl font-bold'>{crm?.name} <span className='text-gray-400 text-xl'>[crmId: {crm?._id}]</span></h1>
             <h2 className='text-lg text-gray-400 mt-2'><span className='text-white'>Managed By: <b>{crm?.createdBy?.name.toUpperCase()}</b> </span>[userId: {crm?.createdBy?._id}]</h2>
+
+            <h3 className="text-lg mt-3">Status: {crm?.deactivated ?
+                <span className='bg-red-400 p-1 rounded-lg font-bold'>Deactivated</span>
+                :
+                <span className='bg-green-400 p-1 px-2 rounded-lg font-bold'>Active</span>}</h3>
 
             {/* User List */}
             <motion.div
@@ -151,7 +156,7 @@ const CrmView = () => {
 
             <dialog id="my_modal_11" className="modal modal-bottom sm:modal-middle">
                 <div style={{ backgroundColor: crm?.theme?.card?.background }} className="modal-box p-6 rounded-lg shadow-lg w-full max-w-md">
-                    <h1 style={{ color: crm?.theme?.card?.text }} className="text-xl font-bold mb-4">Change { updateT ? "Theme" : "Layout" }</h1>
+                    <h1 style={{ color: crm?.theme?.card?.text }} className="text-xl font-bold mb-4">Change {updateT ? "Theme" : "Layout"}</h1>
                     <div className="space-y-4 text-center">
                         {
                             choices?.length > 0 ?
