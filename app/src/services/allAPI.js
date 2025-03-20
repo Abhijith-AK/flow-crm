@@ -151,3 +151,13 @@ export const deactivateCrmAPI = async (id, reqHeader) => {
 export const updateCrmActivateAPI = async (reqHeader, reqBody) => {
     return await commonAPI("PUT", `${SERVERURL}/api/crm/update-ac`, reqBody, reqHeader)
 }
+
+// get all msg
+export const getAllMessages = async (reqBody, reqHeader) => {
+    return await commonAPI("POST", `${SERVERURL}/api/message/all`, reqBody, reqHeader)
+}
+
+// send msg
+export const sendMessage = async (reqBody, reqHeader) => {
+    return await commonAPI("POST", `${SERVERURL}/api/message/send`, reqBody, reqHeader)
+}

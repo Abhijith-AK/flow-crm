@@ -1,15 +1,34 @@
 import { Megaphone, MessageCircleDashed, UserCircle2Icon, UserCog, Users2 } from 'lucide-react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { getEmployees } from '../../../redux/slices/employeeSlice'
+import { useNavigate } from 'react-router'
+import { getEmployeeAPI } from '../../../services/allAPI'
 
 const Chat = ({ manager }) => {
   const { crm } = useSelector((state) => state.crm)
-  const { employees, loading, error } = useSelector((state) => state.employee);
+  const token = sessionStorage.getItem("token");
+  const { employees } = useSelector((state) => state.employee);
+  const [employee, setEmployee] = useState(null)
+
+  const getManager = async () => {
+    try {
+      const response = await getEmployeeAPI(crm?.createdBy._id, {
+        "Authorization": `Bearer ${token}`
+      })
+      if (response.status == 200) {
+        setEmployee(response.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   useEffect(() => {
     dispatch(getEmployees(crm._id));
+    getManager()
   }, [dispatch])
 
   return (
@@ -35,6 +54,7 @@ const Chat = ({ manager }) => {
             employees?.length > 0 ?
               employees.map(employee => (
                 <div
+                  onClick={() => navigate(employee._id, {state: {employee}})}
                   key={employee._id}
                   className="flex items-center  mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
                   style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}>
@@ -50,7 +70,9 @@ const Chat = ({ manager }) => {
         :
         <div style={{ borderColor: crm?.theme?.card.border }} className="p-1 md:p-6 m-4 border-2 rounded-lg">
           <h1 className="text-2xl">Manager</h1>
-          <div className="flex items-center mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
+          <div
+            onClick={() => { navigate(employee._id, { state: { employee } })}}
+            className="flex items-center mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
             style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}>
             <MessageCircleDashed size={40} />
             <div className="text-4xl mb-2 flex flex-wrap md:flex-nowrap w-full justify-center items-center gap-2 break-words">

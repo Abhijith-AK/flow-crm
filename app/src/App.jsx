@@ -20,8 +20,12 @@ import EmployeeDashboard from './components/Employee/EmployeeDashboard'
 import Leads from './components/Crm/Lead/Leads'
 import Tasks from './components/Crm/Tasks'
 import Chat from './components/Crm/Chat/Chat'
+import io from "socket.io-client"
 import Unauthorized from './pages/Unauthorized'
 import CrmManagement from './components/Admin/CrmManagement'
+import ChatView from './components/Crm/Chat/ChatView'
+
+export const socket = io("/")
 
 const App = () => {
   const location = useLocation()
@@ -87,6 +91,7 @@ const App = () => {
         <Route path='tasks' element={<Tasks manager={true} />} />
         <Route path='settings' element={<ManagerSettings />} />
         <Route path='chat' element={<Chat manager={true} />} />
+        <Route path='chat/:chatId' element={<ChatView manager={true} />} />
         <Route path='leads/:leadId' element={<LeadView manager={true} />} />
       </Route>
       {/* EMPLOYEE */}
@@ -95,6 +100,7 @@ const App = () => {
         <Route path='leads' element={<Leads manager={false} />} />
         <Route path='tasks' element={<Tasks manager={false} />} />
         <Route path='chat' element={<Chat manager={false} />} />
+        <Route path='chat/:chatId' element={<ChatView manager={false} />} />
         <Route path='leads/:leadId' element={<LeadView manager={false} />} />
       </Route>
       <Route path='/unauth' element={<Unauthorized />} />
