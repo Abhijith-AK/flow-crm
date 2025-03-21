@@ -1,3 +1,4 @@
+const { announcements } = require("../models/announcementModel")
 const Messages = require("../models/messageModel")
 
 exports.sendMessage = async (req, res) => {
@@ -31,5 +32,34 @@ exports.getAllMessages = async (req, res) => {
     } catch (error) {
         res.status(500).json(error)
         console.log(error)
+    }
+}
+
+exports.getAnnouncements = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const announcement = await announcements.find({ crmId: id }).sort({ createdAt: -1 });
+        res.status(200).json(announcement);
+    } catch (error) {
+        console.error("Error fetching announcements:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};
+
+exports.postAnnouncement = async (req, res) => {
+    try {
+        const { crmId, senderId, senderName, message } = req.body;
+
+        if (!crmId || !senderId || !message) {
+            return res.status(400).json({ error: "All fields are required" });
+        }
+
+        const newAnnouncement = new announcements({ crmId, senderId, senderName, message });
+        await newAnnouncement.save();
+
+        return res.status(201).json(newAnnouncement);
+    } catch (error) {
+        console.error("Error posting announcement:", error);
+        res.status(500).json({ error: "Internal Server Error" });
     }
 }

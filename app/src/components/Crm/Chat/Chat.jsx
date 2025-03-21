@@ -4,12 +4,15 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getEmployees } from '../../../redux/slices/employeeSlice'
 import { useNavigate } from 'react-router'
 import { getEmployeeAPI } from '../../../services/allAPI'
+import { socket } from '../../../App'
 
 const Chat = ({ manager }) => {
   const { crm } = useSelector((state) => state.crm)
   const token = sessionStorage.getItem("token");
   const { employees } = useSelector((state) => state.employee);
+  const currentUser = JSON.parse(sessionStorage.getItem("user"));
   const [employee, setEmployee] = useState(null)
+  const [onlineUsers, setOnlineUsers] = useState(null);
 
   const getManager = async () => {
     try {
@@ -27,6 +30,21 @@ const Chat = ({ manager }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
+    if (currentUser?._id) {
+      socket.emit("join", currentUser._id);
+    }
+  }, []);
+
+
+  useEffect(() => {
+
+    socket.on("online", (users) => {
+      setOnlineUsers(users);
+    });
+
+  }, [onlineUsers]);
+
+  useEffect(() => {
     dispatch(getEmployees(crm._id));
     getManager()
   }, [dispatch])
@@ -37,7 +55,9 @@ const Chat = ({ manager }) => {
 
       <div style={{ borderColor: crm?.theme?.card.border }} className="p-1 md:p-6 m-4 border-2 rounded-lg">
         <h1 className="text-2xl">Anouncements</h1>
-        <div className="flex items-center  mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
+        <div
+          onClick={() => navigate(`/crm/${crm._id}/${manager? "manager" : "employee"}/announcements`, { state: { isManager: manager, crmId: crm._id } })}
+          className="flex items-center  mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
           style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}>
           <Megaphone size={40} />
           <h1 className="text-4xl mb-2 flex w-full justify-center items-center gap-2">
@@ -54,7 +74,7 @@ const Chat = ({ manager }) => {
             employees?.length > 0 ?
               employees.map(employee => (
                 <div
-                  onClick={() => navigate(employee._id, {state: {employee}})}
+                  onClick={() => navigate(employee._id, { state: { employee } })}
                   key={employee._id}
                   className="flex items-center  mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
                   style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}>
@@ -62,6 +82,11 @@ const Chat = ({ manager }) => {
                   <div className="text-3xl mb-2 flex flex-wrap md:flex-nowrap w-full justify-center items-center gap-2">
                     <UserCircle2Icon size={30} />
                     <h1 className='w-fit text-center break-words'>{employee.name.toUpperCase()}</h1>
+                  </div>
+                  <div>
+                    {
+                      onlineUsers?.find((value) => value === employee._id) ? <h1 className='text-xl me-2 text-green-500'>Online</h1> : <h1 className='text-xl me-2 text-red-300'>Offline</h1>
+                    }
                   </div>
                 </div>
               )) : "You Haven't added any Employees"
@@ -71,7 +96,7 @@ const Chat = ({ manager }) => {
         <div style={{ borderColor: crm?.theme?.card.border }} className="p-1 md:p-6 m-4 border-2 rounded-lg">
           <h1 className="text-2xl">Manager</h1>
           <div
-            onClick={() => { navigate(employee._id, { state: { employee } })}}
+            onClick={() => { navigate(employee._id, { state: { employee } }) }}
             className="flex items-center mt-5 px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg cursor-pointer"
             style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}>
             <MessageCircleDashed size={40} />

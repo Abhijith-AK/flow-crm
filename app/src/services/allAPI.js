@@ -161,3 +161,11 @@ export const getAllMessages = async (reqBody, reqHeader) => {
 export const sendMessage = async (reqBody, reqHeader) => {
     return await commonAPI("POST", `${SERVERURL}/api/message/send`, reqBody, reqHeader)
 }
+
+export const getAllAnnouncements = async (crmId, headers) => {
+    return await commonAPI("GET", `${SERVERURL}/api/message/announcements/${crmId}`,{}, headers );
+};
+
+export const postAnnouncement = async (data, headers) => {
+    return await commonAPI("POST", `${SERVERURL}/api/message/announcements`, data, headers );
+};

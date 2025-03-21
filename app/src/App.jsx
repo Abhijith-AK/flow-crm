@@ -24,8 +24,10 @@ import io from "socket.io-client"
 import Unauthorized from './pages/Unauthorized'
 import CrmManagement from './components/Admin/CrmManagement'
 import ChatView from './components/Crm/Chat/ChatView'
+import SERVERURL from './services/serverURL'
+import Announcements from './components/Crm/Chat/Announcements'
 
-export const socket = io("/")
+export const socket = io(SERVERURL)
 
 const App = () => {
   const location = useLocation()
@@ -91,6 +93,7 @@ const App = () => {
         <Route path='tasks' element={<Tasks manager={true} />} />
         <Route path='settings' element={<ManagerSettings />} />
         <Route path='chat' element={<Chat manager={true} />} />
+        <Route path='announcements' element={<Announcements manager={true} />} />
         <Route path='chat/:chatId' element={<ChatView manager={true} />} />
         <Route path='leads/:leadId' element={<LeadView manager={true} />} />
       </Route>
@@ -100,6 +103,7 @@ const App = () => {
         <Route path='leads' element={<Leads manager={false} />} />
         <Route path='tasks' element={<Tasks manager={false} />} />
         <Route path='chat' element={<Chat manager={false} />} />
+        <Route path='announcements' element={<Announcements manager={false} />} />
         <Route path='chat/:chatId' element={<ChatView manager={false} />} />
         <Route path='leads/:leadId' element={<LeadView manager={false} />} />
       </Route>

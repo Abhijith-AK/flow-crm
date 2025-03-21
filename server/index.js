@@ -21,6 +21,57 @@ app.use("/api", userRouter)
 app.use("/api", crmRouter)
 app.use("/api/message", messageRouter)
 
+const io = new socket.Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+})
+
+
+const onlineUsers = new Map()
+
+io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
+
+    socket.on("join", (userId) => {
+        onlineUsers.set(userId, socket.id);
+        console.log(`User ${userId} is online`);
+        io.emit("online", Array.from(onlineUsers.keys()));
+    });
+
+    socket.on("send", ({ senderId, recieverId, message }) => {
+        const receiverSocketId = onlineUsers.get(recieverId);
+        console.log(receiverSocketId, onlineUsers, recieverId)
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("receive", { senderId, message });
+            console.log(recieverId, message)
+        }
+    });
+
+    socket.on("joinCRM", (crmId) => {
+        socket.join(crmId);
+    });
+
+    socket.on("announcement", (data) => {
+        const { crmId } = data;
+        io.to(crmId).emit("announcement", data); // Send only to users in that CRM
+    });
+
+
+    socket.on("disconnect", () => {
+        for (let [userId, socketId] of onlineUsers.entries()) {
+            if (socketId === socket.id) {
+                onlineUsers.delete(userId);
+                io.emit("online", Array.from(onlineUsers.keys()));
+                console.log(`User ${userId} disconnected`);
+                break;
+            }
+        }
+    });
+});
+
+
 try {
     deleteExpiredCrms();
     console.log("Cron job for deleting expired CRMs started.");

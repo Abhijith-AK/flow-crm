@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 
 const ChatView = () => {
   const [messages, setMessages] = useState([]);
-  const currentUser = JSON.parse(sessionStorage.getItem("user"));
+  let currentUser = JSON.parse(sessionStorage.getItem("user"));
   const token = sessionStorage.getItem("token");
   const navigate = useNavigate()
   const { crm } = useSelector((state) => state.crm)
@@ -18,8 +18,18 @@ const ChatView = () => {
   const [onMessageSent, setOnMessageSent] = useState(null);
 
   useEffect(() => {
-    if (selectedUser) getMessages();
+    if (selectedUser) {
+      getMessages();
+    } else {
+      navigate(-1)
+    }
   }, [selectedUser, onMessageSent]);
+
+  useEffect(() => {
+    if (currentUser?._id) {
+      socket.emit("join", currentUser._id);
+    }
+  }, []);
 
   useEffect(() => {
     socket.on("receive", (newMessage) => {
@@ -94,7 +104,7 @@ const ChatView = () => {
         )}
         <div ref={messagesEndRef}></div>
       </div>
-      <div className='px-6'><ChatInput selectedUser={selectedUser} setOnMessageSent={setOnMessageSent}/></div>
+      <div className='px-6'><ChatInput selectedUser={selectedUser} setOnMessageSent={setOnMessageSent} /></div>
     </div>
   );
 };
