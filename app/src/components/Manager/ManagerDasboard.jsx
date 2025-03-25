@@ -1,32 +1,15 @@
 import { motion } from 'framer-motion'
 import StatCard from '../../utils/common/StatCard'
-import { Coins, Group, ListTodo, Trophy, UserCircle, Users } from "lucide-react"
-import { useSelector } from "react-redux"
+import { Coins, ListTodo, Trophy, UserCircle, Users } from "lucide-react"
+import { useDispatch, useSelector } from "react-redux"
 import PieChartC from '../../utils/charts/PieChartC'
 import AreaChartC from '../../utils/charts/AreaChartC'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { getLeads } from '../../redux/slices/leadSlice'
+import { getTasks } from '../../redux/slices/taskSlice'
+import { getEmployees } from '../../redux/slices/employeeSlice'
 
-const stats = [
-  { title: "Total No of Leads", content: 386, icon: UserCircle },
-  { title: "Tasks", content: 386, icon: ListTodo },
-  { title: "Total Revenue", content: "₹" + 386, icon: Coins },
-  { title: "Total Employees", content: 386, icon: Users }
-]
-
-const leadsData = [
-  { month: "Jan", conversionRate: 12 },
-  { month: "Feb", conversionRate: 18 },
-  { month: "Mar", conversionRate: 25 },
-  { month: "Apr", conversionRate: 20 },
-  { month: "May", conversionRate: 30 },
-  { month: "Jun", conversionRate: 35 },
-  { month: "Jul", conversionRate: 40 },
-  { month: "Aug", conversionRate: 38 },
-  { month: "Sep", conversionRate: 45 },
-  { month: "Oct", conversionRate: 50 },
-  { month: "Nov", conversionRate: 55 },
-  { month: "Dec", conversionRate: 60 },
-];
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const employeePerformanceData = [
   { rank: 1, name: "John Doe", completedTasks: 120, revenue: 50000 },
@@ -41,25 +24,80 @@ const employeePerformanceData = [
   { rank: 10, name: "Daniel Martinez", completedTasks: 70, revenue: 31000 },
 ];
 
-const recentActivities = [
-  { id: 1, type: "login", user: "John Doe", time: "2 hours ago" },
-  { id: 2, type: "task", user: "Jane Smith", action: "completed", task: "Client follow-up", time: "3 hours ago" },
-  { id: 3, type: "change", user: "Alice Johnson", action: "updated", field: "Lead Status", time: "5 hours ago" },
-  { id: 4, type: "task", user: "Michael Brown", action: "assigned", task: "Proposal drafting", time: "6 hours ago" },
-  { id: 5, type: "login", user: "Emily White", time: "8 hours ago" },
-  { id: 6, type: "change", user: "David Green", action: "edited", field: "Company Profile", time: "1 day ago" },
-];
+// const recentActivities = [
+//   { id: 1, type: "login", user: "John Doe", time: "2 hours ago" },
+//   { id: 2, type: "task", user: "Jane Smith", action: "completed", task: "Client follow-up", time: "3 hours ago" },
+//   { id: 3, type: "change", user: "Alice Johnson", action: "updated", field: "Lead Status", time: "5 hours ago" },
+//   { id: 4, type: "task", user: "Michael Brown", action: "assigned", task: "Proposal drafting", time: "6 hours ago" },
+//   { id: 5, type: "login", user: "Emily White", time: "8 hours ago" },
+//   { id: 6, type: "change", user: "David Green", action: "edited", field: "Company Profile", time: "1 day ago" },
+// ];
 
 const ManagerDasboard = () => {
   const { crm } = useSelector((state) => state.crm)
+  const { leads } = useSelector((state) => state.lead);
+  const { tasks } = useSelector((state) => state.task);
+  const { employees } = useSelector((state) => state.employee);
+  const [leadsData, setLeadsData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(getLeads(crm._id))
+    dispatch(getTasks(crm._id))
+    dispatch(getEmployees(crm._id))
+  }, [dispatch])
+
+  useEffect(() => {
+    if (leads?.length > 0) {
+      const groupedLeads = leads.reduce((acc, lead) => {
+        if (lead.status === "won") {
+          const month = new Date(lead.updatedAt).getMonth(); // Get month index (0-11)
+          acc[month] = (acc[month] || 0) + 1; // Count leads per month
+        }
+        return acc;
+      }, {});
+
+      const formattedData = monthNames.map((month, index) => ({
+        month,
+        conversionRate: groupedLeads[index] || 0 // Default to 0 if no leads for that month
+      }));
+
+      setLeadsData(formattedData);
+    }
+  }, [leads]);
+  const employeePerformanceData = employees
+    .map((employee) => {
+      const completedTasks = employee.tasks?.filter(
+        (task) => task.status === crm?.workflows[crm?.workflows.length - 1]
+      )?.length;
+
+      const totalRevenue = leads
+        .filter((lead) => lead.assignedTo._id === employee?._id && lead.status === "won")
+        .reduce((sum, lead) => sum + Number(lead.revenue || 0), 0);
+
+      return {
+        name: employee.name,
+        completedTasks,
+        revenue: totalRevenue,
+      };
+    })
+    .sort((a, b) => b.revenue - a.revenue) // Sort by revenue (highest first)
+    .map((employee, index) => ({ ...employee, rank: index + 1 }));
   const topEmployee = employeePerformanceData[0]
+  console.log(employeePerformanceData, employees, leads);
+  
   const pieData = [
-    { name: "Completed", value: 30, color: crm?.theme?.text.secondary },
-    { name: "In Progress", value: 20, color: crm?.theme?.card.border },
-    { name: "Pending", value: 10, color: crm?.theme?.text.primary },
+    { name: "Completed", value: tasks?.filter((value) => value.status == crm?.workflows[crm?.workflows.length - 1])?.length || 0, color: crm?.theme?.text.secondary },
+    { name: "In Progress", value: tasks?.filter((value) => crm?.workflows.slice(1, -1).includes(value.status)).length || 0, color: crm?.theme?.card.border },
+    { name: "Pending", value: tasks?.filter((value) => value.status == crm?.workflows[0])?.length || 0, color: crm?.theme?.text.primary },
   ];
 
+  const stats = [
+    { title: "Total No of Leads", content: leads?.length || 0, icon: UserCircle },
+    { title: "Tasks", content: tasks?.length || 0, icon: ListTodo },
+    { title: "Total Revenue", content: "₹" + leads?.filter((value) => value.status === "won").reduce((a, b) => a + Number(b.revenue || 0), 0) || 0, icon: Coins },
+    { title: "Total Employees", content: employees?.length || 0, icon: Users }
+  ]
 
   return (
     <div className='w-full h-full'>

@@ -168,7 +168,8 @@ exports.getAllEmployeeController = async (req, res) => {
                     const allTasks = await tasks.find({ assignedTo: employee._id });
                     return {
                         ...employee.toObject(),
-                        taskCount: allTasks.length
+                        taskCount: allTasks.length,
+                        tasks: allTasks
                     };
                 })
             );

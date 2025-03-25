@@ -1,8 +1,10 @@
 export const formValidator = (type, value) => {
-    if (!value?.toString().trim()) {
-        return { validation: false, message: "Field is Required" };
+    if (!value === "taskCount" || !value === "tasks") {
+        if (!value?.toString().trim()) {
+            return { validation: false, message: "Field is Required" };
+        }    
     }
-
+    
     switch (type) {
         case "password":
             return value.length < 8
@@ -57,7 +59,6 @@ export const formValidator = (type, value) => {
             return value.length >= 10
                 ? { validation: true, message: "" }
                 : { validation: false, message: "Description must be at least 10 characters long" };
-
 
         default:
             return { validation: true, message: "" }; // No validation needed for other fields

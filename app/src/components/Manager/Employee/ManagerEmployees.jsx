@@ -109,13 +109,15 @@ const ManagerEmployees = () => {
   };
 
   const handleUpdate = async (e) => {
-    setLoading(true)
     e.preventDefault();
-    // Validate all fields before submission
+    setLoading(true);
+
     let isValid = true;
     const newErrors = {};
+
+    console.log(formData)
+
     Object.keys(formData).forEach((key) => {
-      console.log(formData[key])
       const validation = formValidator(key, formData[key]);
       if (!validation.validation) {
         isValid = false;
@@ -124,39 +126,38 @@ const ManagerEmployees = () => {
     });
 
     if (!isValid) {
-      setLoading(false)
+      setLoading(false);
       setErrors(newErrors);
       return;
     }
 
-    const reqHeader = {
-      "Authorization": `Bearer ${token}`
-    };
+    const reqHeader = { "Authorization": `Bearer ${token}` };
     const reqBody = { ...formData, crmId: crm._id };
 
     try {
       const response = await updateEmployeeAPI(formData._id, reqHeader, reqBody);
-      if (response.status === 201) {
-        setLoading(false)
+      if (response?.status === 201) {
         alert("Employee Updated!");
         handleClose();
         dispatch(getEmployees(crm._id));
+
+        // Reset form only on success
         setFormData({
           name: "",
           email: "",
           password: "",
           phoneno: "",
-        }); // Reset form
+        });
       } else {
-        alert("Creation failed: " + response.response.data);
-        setLoading(false)
+        alert("Update failed: " + response?.response?.data || "Unknown error");
       }
     } catch (error) {
       console.error(error);
-      alert("Error: " + error);
-      setLoading(false)
+      alert("Error: " + error.message);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const handleDelete = async (e) => {
     setLoading(true)
