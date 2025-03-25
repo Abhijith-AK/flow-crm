@@ -24,7 +24,7 @@ const Sidebar = ({ open, setOpen}) => {
       <div className='flex-1 mt-10'>
         <SidebarItem Icon={LayoutDashboard} path="/admin" label={open ? "Dashboard" : ""} />
         <SidebarItem Icon={BoxesIcon} path="/admin/crm" label={open ? "CRM Management" : ""} />
-        <SidebarItem Icon={ReceiptIndianRupee} path="/admin/bills" label={open ? "Payments / Bills" : ""} />
+        {/* <SidebarItem Icon={ReceiptIndianRupee} path="/admin/bills" label={open ? "Payments / Bills" : ""} /> */}
         <SidebarItem Icon={ClipboardList} path="/admin/requests" label={open ? "Complaints / Requests" : ""} />
       </div>
       <Link to={'/login'} className="p-3 m-2 text-2xl flex gap-5 items-center font-bold bg-red-400 rounded-lg hover:bg-red-500 cursor-pointer">

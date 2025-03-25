@@ -1,25 +1,22 @@
 import { Edit, Eye } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSelector } from "react-redux";
-
-const employeesData = [
-    { id: 1, name: "Alice Johnson", email: "alice@example.com", status: "Active", lastLogin: "2025-03-03", tasks: 5 },
-    { id: 2, name: "Bob Smith", email: "bob@example.com", status: "Inactive", lastLogin: "2025-02-28", tasks: 2 },
-    { id: 3, name: "Charlie Davis", email: "charlie@example.com", status: "Active", lastLogin: "2025-03-01", tasks: 8 },
-    { id: 4, name: "David White", email: "david@example.com", status: "Active", lastLogin: "2025-03-02", tasks: 3 },
-    { id: 5, name: "Eve Adams", email: "eve@example.com", status: "Inactive", lastLogin: "2025-02-25", tasks: 0 },
-    { id: 6, name: "Alice Johnson", email: "alice@example.com", status: "Active", lastLogin: "2025-03-03", tasks: 5 },
-    { id: 7, name: "Bob Smith", email: "bob@example.com", status: "Inactive", lastLogin: "2025-02-28", tasks: 2 },
-    { id: 8, name: "Charlie Davis", email: "charlie@example.com", status: "Active", lastLogin: "2025-03-01", tasks: 8 },
-    { id: 9, name: "David White", email: "david@example.com", status: "Active", lastLogin: "2025-03-02", tasks: 3 },
-    { id: 10, name: "Eve Adams", email: "eve@example.com", status: "Inactive", lastLogin: "2025-02-25", tasks: 0 },
-];
+import { socket } from '../../../App'
 
 const EmployeesTable = ({ search, employees, setView, setUpdate, setFormData }) => {
+    console.log(employees)
     const { crm } = useSelector((state) => state.crm);
     const [currentPage, setCurrentPage] = useState(1);
+    const [onlineUsers, setOnlineUsers] = useState(null);
     const itemsPerPage = 8;
+
+      useEffect(() => {   
+        socket.on("online", (users) => {
+          setOnlineUsers(users);
+        });
+      }, [onlineUsers]);
+    
 
     // Filter Employees based on search input
     const filteredEmployees = employees?.filter(employee =>
@@ -70,9 +67,9 @@ const EmployeesTable = ({ search, employees, setView, setUpdate, setFormData }) 
                             >
                                 <td className="p-3">{employee.name}</td>
                                 <td className="p-3">{employee.email}</td>
-                                <td className="p-3">{employee.status}</td>
-                                <td className="p-3">{employee.lastLogin}</td>
-                                <td className="p-3">{employee.tasks}</td>
+                                <td className="p-3">{onlineUsers?.find((value) => value === employee._id) ? <h1 className='text-green-500'>Online</h1> : <h1 className='text-red-300'>Offline</h1>}</td>
+                                <td className="p-3">{new Date(employee.updatedAt).toDateString()}</td>
+                                <td className="p-3">{employee.taskCount}</td>
                                 <td className="p-3 flex gap-5">
                                     <button
                                         onClick={() => {

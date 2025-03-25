@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const sendMail = require("../services/emailService")
 const crypto = require("crypto");
-const crm = require("../models/crmModel")
+const crm = require("../models/crmModel");
+const tasks = require("../models/taskModel");
 
 // verify email
 exports.registerVerifyEmailController = async (req, res) => {
@@ -161,7 +162,19 @@ exports.getAllEmployeeController = async (req, res) => {
     const { id } = req.params
     try {
         const allEmployee = await users.find({ crmId: id, role: "employee" })
-        if (allEmployee) res.status(200).json(allEmployee)
+        if (allEmployee) {
+            const data = await Promise.all(
+                allEmployee.map(async (employee) => {
+                    const allTasks = await tasks.find({ assignedTo: employee._id });
+                    return {
+                        ...employee.toObject(),
+                        taskCount: allTasks.length
+                    };
+                })
+            );
+
+            res.status(200).json(data);
+        }
     } catch (error) {
         res.status(500).json(error)
         console.log("Error inside getAllEmployeeController", error)
