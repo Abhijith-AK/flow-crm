@@ -2,7 +2,7 @@ import { useState } from "react";
 import AuthImagePattern from "../utils/Patterns/AuthImagePattern";
 import { Link, useNavigate } from "react-router";
 import { formValidator } from "../utils/FormValidator";
-import { loginAPI, updateCrmActivateAPI } from "../services/allAPI";
+import { loginAPI, updateCrmActivateAPI, updateEmployeeAPI } from "../services/allAPI";
 import { LoaderCircle } from "lucide-react";
 
 const Login = () => {
@@ -55,6 +55,9 @@ const Login = () => {
                         }, { id: response.data.user._id })
                     }
                     const id = response.data.user.crmId
+                    if (role === "employee") await updateEmployeeAPI(response.data.user._id, {
+                        "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+                    }, response.data)
                     role === "manager" ? navigate(`/crm/${id}/${role}`) : navigate(`/crm/${id}/${role}/leads`)
                 } else if (role === "admin") {
                     navigate('/admin')

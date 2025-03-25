@@ -11,7 +11,8 @@ const EmployeesTable = ({ search, employees, setView, setUpdate, setFormData }) 
     const [onlineUsers, setOnlineUsers] = useState(null);
     const itemsPerPage = 8;
 
-      useEffect(() => {   
+    useEffect(() => {   
+        socket.emit("join", JSON.parse(sessionStorage.getItem("user"))._id);
         socket.on("online", (users) => {
           setOnlineUsers(users);
         });
