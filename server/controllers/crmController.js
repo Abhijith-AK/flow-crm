@@ -132,3 +132,31 @@ exports.deleteCrmController = async (req, res) => {
         console.log("Error inside deleteCrmController", error)
     }
 }
+
+// crm growth over time
+exports.getCrmGrowthController = async (req, res) => {
+    try {
+        const crmGrowth = await crm.aggregate([
+            {
+                $group: {
+                    _id: {
+                        year: { $year: "$createdAt" },
+                        month: { $month: "$createdAt" }
+                    },
+                    activeCount: { $sum: 1 }
+                }
+            },
+            { $sort: { "_id.year": 1, "_id.month": 1 } }
+        ]);
+
+        const formattedData = crmGrowth.map(item => ({
+            month: new Date(item._id.year, item._id.month - 1).toLocaleString('en-US', { month: 'short', year: 'numeric' }),
+            activeCount: item.activeCount
+        }));
+
+        res.status(200).json(formattedData);
+    } catch (error) {
+        console.error("Error fetching CRM growth data:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+};

@@ -67,4 +67,6 @@ crmRouter.get("/crm/:id/note/:leadId", jwtMiddleware, noteController.getAllNotes
 // delete note
 crmRouter.delete("/crm/note/delete/:id", jwtMiddleware, noteController.deleteNoteController)
 
+crmRouter.get("/crm-growth", crmController.getCrmGrowthController);
+
 module.exports = crmRouter

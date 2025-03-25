@@ -165,44 +165,44 @@ const ManagerDasboard = () => {
           )}
         </motion.div>
       </div>
-      <motion.div
-        style={{ backgroundColor: crm?.theme?.card.background }}
-        className="p-4 m-3 rounded-lg transition-all duration-300"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h1 className="text-xl mb-2">Recent Activity</h1>
-        <div className="p-3 rounded-md">
-          {recentActivities.length > 0 ? (
-            <table style={{ border: `2px solid ${crm?.theme?.card.border}` }} className="w-full border-collapse border text-left">
-              <thead>
-                <tr style={{ backgroundColor: crm?.theme?.card.border}}>
-                  <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>User</th>
-                  <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>Action</th>
-                  <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>Details</th>
-                  <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentActivities.map((activity, index) => (
-                  <tr key={index} className="border   style={{border: `2px solid ${crm?.theme?.card.border}`}}text-gray-300">
-                    <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>{activity.user}</td>
-                    <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>{activity.action || "Logged in"}</td>
-                    <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>
-                      {activity.task ? `Task: "${activity.task}"` : activity.field ? `Field: "${activity.field}"` : "-"}
-                    </td>
-                    <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>{activity.time}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p className="text-gray-500">No recent activity</p>
-          )}
-        </div>
+      {/* <motion.div
+  style={{ backgroundColor: crm?.theme?.card.background }}
+  className="p-4 m-3 rounded-lg transition-all duration-300"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  <h1 className="text-xl mb-2">Recent Activity</h1>
+  <div className="p-3 rounded-md">
+    {recentActivities.length > 0 ? (
+      <table style={{ border: `2px solid ${crm?.theme?.card.border}` }} className="w-full border-collapse border text-left">
+        <thead>
+          <tr style={{ backgroundColor: crm?.theme?.card.border}}>
+            <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>User</th>
+            <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>Action</th>
+            <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>Details</th>
+            <th className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {recentActivities.map((activity, index) => (
+            <tr key={index} className="border   style={{border: `2px solid ${crm?.theme?.card.border}`}}text-gray-300">
+              <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>{activity.user}</td>
+              <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>{activity.action || "Logged in"}</td>
+              <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>
+                {activity.task ? `Task: "${activity.task}"` : activity.field ? `Field: "${activity.field}"` : "-"}
+              </td>
+              <td className="p-2 border " style={{border: `2px solid ${crm?.theme?.card.border}`}}>{activity.time}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <p className="text-gray-500">No recent activity</p>
+    )}
+  </div>
 
-      </motion.div>
+          </motion.div> */}
     </div>
   )
 }

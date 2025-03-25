@@ -25,6 +25,8 @@ userRouter.get("/employee/:id", jwtMiddleware, userController.getEmployeeControl
 userRouter.put("/employee/:id", jwtMiddleware, userController.updateEmployeeController);
 // delete employee
 userRouter.delete("/employee/:id", jwtMiddleware, userController.deleteEmployeeController);
+// get all users
+userRouter.get("/users", jwtMiddleware, userController.getAllUserController);
 
 
 module.exports = userRouter

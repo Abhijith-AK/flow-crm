@@ -13,7 +13,7 @@ const EmployeeTopNav = ({ theme, id, name }) => {
         <h1 className="text-3xl">{name}</h1>
       </div>
       <div className='flex-1 flex justify-center items-center'>
-        <NavLink
+        {/* <NavLink
           to={`/crm/${id}/employee`}
           end
           className="flex  nav-link p-3 rounded-lg items-center mx-2"
@@ -25,7 +25,7 @@ const EmployeeTopNav = ({ theme, id, name }) => {
         >
           <LayoutDashboard />
           <p className='hidden ms-2 md:flex'>Dashboard</p>
-        </NavLink>
+        </NavLink> */}
         <NavLink
           style={({ isActive }) => ({
             backgroundColor: isActive ? activeColor : linkBackground,

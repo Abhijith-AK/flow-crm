@@ -196,3 +196,13 @@ export const replyComplaint = async (data, headers) => {
 export const deleteComplaints = async (id, headers) => {
     return await commonAPI("DELETE", `${SERVERURL}/api/message/complaints/${id}`, {}, headers);
 };
+
+// get all user
+export const getAllUserAPI = async (reqHeader) => {
+    return await commonAPI("GET", `${SERVERURL}/api/users`, {}, reqHeader)
+}
+
+// get crmGrowth
+export const getCrmgrowthAPI = async (headers) => {
+    return await commonAPI("GET", `${SERVERURL}/api/crm-growth`, {}, headers)
+}

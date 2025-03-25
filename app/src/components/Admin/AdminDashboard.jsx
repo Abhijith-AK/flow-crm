@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import StatCard from '../../utils/common/StatCard'
 import { Boxes, Coins, FileSliders, Users } from 'lucide-react'
@@ -8,15 +8,81 @@ import AreaChartC from '../../utils/charts/AreaChartC'
 import RadarChartC from '../../utils/charts/RadarChartC'
 import { areaData, barData, lineData, radarData } from '../../utils/Constants'
 import RecentActivityTable from './RecentActivityTable'
+import { getAllComplaints, getAllUserAPI, getCrmgrowthAPI } from '../../services/allAPI'
+import { useDispatch, useSelector } from 'react-redux'
+import { getAllCrm } from '../../redux/slices/crmSlice'
 
-const stats = [
-  { title: "Total CRMs", content: 20, icon: Boxes },
-  { title: "Active Users", content: 56, icon: Users },
-  { title: "Pending Requests", content: 15, icon: FileSliders },
-  { title: "Revenue", content: "₹ 7843", icon: Coins }
-]
 
 const AdminDashboard = () => {
+  const dispatch = useDispatch()
+  const token = sessionStorage.getItem("token")
+  const [users, setUsers] = useState([])
+  const [req, setReq] = useState([])
+  // console.log(users)
+  const { crms} = useSelector((state) => state.crm)
+  const getAllUsers = async () => {
+    const reqHeader = {
+      "Authorization": `Bearer ${token}`
+    }
+    try {
+      const response = await getAllUserAPI(reqHeader)
+      const requests = await getAllComplaints(reqHeader)
+      
+      if (response.status == 200) setUsers(response.data)
+      if (requests.status == 200) setReq(requests.data.filter((val) => val.resolved === false))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => { getAllUsers(); dispatch(getAllCrm()) }, [])
+
+  const [barData, setBarData] = useState([]);
+
+  useEffect(() => {
+    const fetchCrmGrowth = async () => {
+      try {
+        const response = await getCrmgrowthAPI({
+          "Authorization": `Bearer ${token}`
+        });
+        setBarData(response.data);
+      } catch (error) {
+        console.error("Error fetching CRM growth data:", error);
+      }
+    };
+
+    fetchCrmGrowth();
+  }, []);
+
+  const [radarData, setRadarData] = useState([
+    { category: "Retail", CRMs: 0 },
+    { category: "IT Services", CRMs: 0 },
+    { category: "Healthcare", CRMs: 0 },
+    { category: "Finance", CRMs: 0 },
+    { category: "Education", CRMs: 0 },
+    { category: "Real Estate", CRMs: 0 }
+  ]);
+
+  useEffect(() => {
+    if (crms?.length > 0) {
+      const grouped = crms.reduce((acc, crm) => {
+        acc[crm.type] = (acc[crm.type] || 0) + 1;
+        return acc;
+      }, {});
+
+      const formattedData = radarData.map((item) => ({
+        category: item.category,
+        CRMs: grouped[item.category] || 0 
+      }));
+
+      setRadarData(formattedData);
+    }
+  }, [crms]);
+
+  const stats = [
+    { title: "Total CRMs", content: crms?.length, icon: Boxes },
+    { title: "Active Users", content: users.length, icon: Users },
+    { title: "Pending Requests", content: req.length, icon: FileSliders },
+  ]
   return (
     <motion.div
       className='w-full min-h-screen flex flex-col'
@@ -42,7 +108,7 @@ const AdminDashboard = () => {
       {/* Charts Section */}
       <div className="flex flex-wrap lg:flex-nowrap">
         {/* Area Chart - Active Users Over Time */}
-        <motion.div
+        {/* <motion.div
           className='p-4 m-3 flex flex-col justify-evenly rounded-lg w-full bg-[#3a6fb4] transition-all duration-300'
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,7 +127,7 @@ const AdminDashboard = () => {
             lineColor="#ffffff"
             strokeColor="#629df5"
           />
-        </motion.div>
+        </motion.div> */}
 
         <div className="w-full m-3 flex flex-col space-y-4">
           {/* Bar Chart - CRM Growth Over Time */}
@@ -86,7 +152,7 @@ const AdminDashboard = () => {
           </motion.div>
 
           {/* Line Chart (Title Placeholder) */}
-          <motion.div
+          {/* <motion.div
             className='p-4 rounded-lg w-full bg-[#3a6fb4] transition-all duration-300'
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -103,7 +169,7 @@ const AdminDashboard = () => {
               lineColor="#ffffff"
               strokeColor="#629df5"
             />
-          </motion.div>
+          </motion.div> */}
         </div>
 
         {/* Radar Chart - CRM by Category */}
@@ -130,7 +196,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <RecentActivityTable />
+      {/* <RecentActivityTable /> */}
     </motion.div>
   )
 }

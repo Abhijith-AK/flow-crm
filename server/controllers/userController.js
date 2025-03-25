@@ -223,3 +223,16 @@ exports.deleteEmployeeController = async (req, res) => {
         console.log("Error inside deleteEmployeeController", error)
     }
 }
+
+// get all users
+exports.getAllUserController = async (req, res) => {
+    try {
+        const allUser = await users.find()
+        if (allUser) {
+            res.status(200).json(allUser);
+        }
+    } catch (error) {
+        res.status(500).json(error)
+        console.log("Error inside getAllEmployeeController", error)
+    }
+}

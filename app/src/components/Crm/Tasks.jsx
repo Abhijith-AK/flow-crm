@@ -369,7 +369,7 @@ const Tasks = ({ manager }) => {
               <div>
                 <label className="block text-sm font-medium">Assigned To</label>
                 <select
-                  value={formData.assignedTo._id || ""}
+                  value={formData.assignedTo._id || formData.assignedTo }
                   onChange={(e) => handleChange("assignedTo", e.target.value)}
                   disabled={show}
                   className="w-full mt-1 p-2 border text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
