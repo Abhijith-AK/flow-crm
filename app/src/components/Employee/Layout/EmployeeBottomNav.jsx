@@ -12,7 +12,7 @@ const EmployeeBottomNav = ({ theme, id }) => {
   return (
     <footer style={{ backgroundColor: navBackground, color: textColor }} className={`flex justify-between text-center fixed z-10 bottom-2 p-1 py-2 rounded-xl left-0 right-0 w-fit mx-auto`}>
       <div className='flex-1 flex items-center'>
-        <NavLink
+        {/* <NavLink
           to={`/crm/${id}/employee`}
           end
           className="flex flex-col nav-link p-3 rounded-lg items-center mx-2"
@@ -24,7 +24,7 @@ const EmployeeBottomNav = ({ theme, id }) => {
         >
           <LayoutDashboard />
           <p className='hidden md:flex'>Dashboard</p>
-        </NavLink>
+        </NavLink> */}
 
         <NavLink
           style={({ isActive }) => ({

@@ -55,7 +55,7 @@ const Login = () => {
                         }, { id: response.data.user._id })
                     }
                     const id = response.data.user.crmId
-                    navigate(`/crm/${id}/${role}`)
+                    role === "manager" ? navigate(`/crm/${id}/${role}`) : navigate(`/crm/${id}/${role}/leads`)
                 } else if (role === "admin") {
                     navigate('/admin')
                 }

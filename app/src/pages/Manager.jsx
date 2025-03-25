@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux"
 import { setCrm } from '../redux/slices/crmSlice'
 import { motion } from "framer-motion"
 import { Slash } from 'lucide-react'
+import ProfileDropdown from '../utils/common/ProfileDropDown'
 
 const Manager = () => {
   const id = useParams().id
@@ -70,11 +71,17 @@ const Manager = () => {
     <div style={{ backgroundColor: crmDetails?.theme.background, color: crmDetails?.theme.text.primary }} className='flex flex-col min-h-screen w-full'>
       {crmDetails?.layout === "Top Navigation" && <TopNavBar name={crmDetails?.name} id={id} theme={crmDetails?.theme.navbar} />}
       {crmDetails?.layout === "Sidebar Focused" && <SideNavBar name={crmDetails?.name} id={id} open={open} setOpen={setOpen} theme={crmDetails?.theme.navbar} />}
+      {crmDetails?.layout === "Bottom Navigation" && <div className="flex justify-between h-20 fixed z-10 top-0 left-0 right-0">
+        <div className="p-3 my-3 flex justify-between items-center">
+          <h1 className="text-3xl">{crmDetails?.name}</h1>
+        </div>
+        <div className='flex items-center me-2'><ProfileDropdown profileName={JSON.parse(sessionStorage.getItem("user")).name} /></div>
+      </div>}
       <div className={`
         flex-1 
         ${crmDetails?.layout === "Top Navigation" && "mt-20"}
         ${crmDetails?.layout === "Sidebar Focused" ? open ? 'ml-20 md:ml-64' : 'ml-20' : null} 
-        ${crmDetails?.layout === "Bottom Navigation" && "mb-20"} 
+        ${crmDetails?.layout === "Bottom Navigation" && "mb-20 mt-20"} 
         `}><Outlet /></div>
       {crmDetails?.layout === "Bottom Navigation" && <BottomNavBar id={id} theme={crmDetails?.theme.navbar} />}
     </div>

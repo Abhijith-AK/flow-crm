@@ -1,5 +1,6 @@
-import { ChevronFirstIcon, CircleUser, LayoutDashboard, ListTodo, LogOut, MessageCircle, Settings, Users } from 'lucide-react';
+import { ChevronFirstIcon, CircleUser, LayoutDashboard, ListTodo, LogOut, MessageCircle, Settings, User, Users } from 'lucide-react';
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
 import "../manager.css"
 
 const SidebarItem = ({ Icon, label, path, hoverColor, linkBackground, activeColor, textColor }) => {
@@ -27,12 +28,13 @@ const SideNavBar = ({ open, setOpen, theme, id, name }) => {
     const hoverColor = theme?.links.hover
     const activeColor = theme?.links.hover
     const linkBackground = theme?.links.background
-      const navigate = useNavigate()
-    
-      const logout = () => {
-        sessionStorage.clear()
-        navigate('/login',{ replace: true })
-      } 
+    const navigate = useNavigate();
+
+    const { crm } = useSelector((state) => state.crm)
+    const logout = () => {
+        sessionStorage.clear();
+        navigate("/login", { replace: true });
+    }
     return (
         <aside style={{ backgroundColor: navBackground, color: textColor }} className={`flex flex-col justify-between h-screen fixed z-10 top-0 left-0 ${open ? 'w-64' : 'w-20'}`}>
             <div className="p-3 my-3 flex justify-between items-center border-b">
@@ -94,6 +96,8 @@ const SideNavBar = ({ open, setOpen, theme, id, name }) => {
                 path={`/crm/${id}/manager/settings`}
                 label={open ? "Settings" : ""}
             />
+            <h1 className='p-3 m-2 text-2xl flex gap-5 items-center font-bold'><User size={35} /> {open && crm.createdBy.name}</h1>
+            <div className='underline h-1 w-full'></div>
             <Link onClick={logout} to={'/login'} className="p-3 m-2 text-2xl flex gap-5 items-center font-bold bg-red-400 rounded-lg hover:bg-red-500 cursor-pointer">
                 <LogOut size={40} /> {open && "Logout"}
             </Link>

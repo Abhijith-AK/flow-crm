@@ -1,5 +1,6 @@
 import { CircleUser, LayoutDashboard, ListTodo, MessageCircle, Settings, Users } from 'lucide-react'
 import { NavLink } from 'react-router'
+import ProfileDropdown from '../../../utils/common/ProfileDropDown'
 
 const EmployeeTopNav = ({ theme, id, name }) => {
   const navBackground = theme?.background
@@ -57,6 +58,7 @@ const EmployeeTopNav = ({ theme, id, name }) => {
           <p className='hidden ms-2 md:flex'>Chat</p>
         </NavLink>
       </div>
+      <div className='flex items-center me-2'><ProfileDropdown profileName={JSON.parse(sessionStorage.getItem("user")).name}/></div>
     </nav>
   )
 }

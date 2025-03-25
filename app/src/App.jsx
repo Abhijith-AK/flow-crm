@@ -99,7 +99,8 @@ const App = () => {
       </Route>
       {/* EMPLOYEE */}
       <Route path='/crm/:id/employee' element={<Employee />}>
-        <Route index element={<EmployeeDashboard />} />
+        {/* <Route index element={<EmployeeDashboard />} /> */}
+        <Route index element={<Leads manager={false} />} />
         <Route path='leads' element={<Leads manager={false} />} />
         <Route path='tasks' element={<Tasks manager={false} />} />
         <Route path='chat' element={<Chat manager={false} />} />
