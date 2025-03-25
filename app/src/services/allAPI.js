@@ -162,10 +162,37 @@ export const sendMessage = async (reqBody, reqHeader) => {
     return await commonAPI("POST", `${SERVERURL}/api/message/send`, reqBody, reqHeader)
 }
 
+// grt all announcement
 export const getAllAnnouncements = async (crmId, headers) => {
     return await commonAPI("GET", `${SERVERURL}/api/message/announcements/${crmId}`,{}, headers );
 };
 
+// post announcement
 export const postAnnouncement = async (data, headers) => {
     return await commonAPI("POST", `${SERVERURL}/api/message/announcements`, data, headers );
+};
+
+// get all complaint
+export const getAllComplaints = async (headers) => {
+    return await commonAPI("GET", `${SERVERURL}/api/message/complaints`, {}, headers);
+};
+
+// get crm complaint
+export const getCrmComplaints = async (id, headers) => {
+    return await commonAPI("GET", `${SERVERURL}/api/message/complaints/${id}`, {}, headers);
+};
+
+// post complaint
+export const postComplaint = async (data, headers) => {
+    return await commonAPI("POST", `${SERVERURL}/api/message/complaint`, data, headers);
+};
+
+// reply complaint
+export const replyComplaint = async (data, headers) => {
+    return await commonAPI("PUT", `${SERVERURL}/api/message/complaint`, data, headers);
+};
+
+// delete complaint
+export const deleteComplaints = async (id, headers) => {
+    return await commonAPI("DELETE", `${SERVERURL}/api/message/complaints/${id}`, {}, headers);
 };

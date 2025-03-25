@@ -5,6 +5,7 @@ import { deactivateCrmAPI, deleteCrmAPI, updateCrmAPI } from "../../services/all
 import { useNavigate } from "react-router"
 import { layouts, themes } from "../../utils/Constants"
 import { resetCrms } from "../../redux/slices/crmSlice"
+import Complaints from "./Complaints"
 const ManagerSettings = () => {
   const { crm } = useSelector((state) => state.crm)
   const token = sessionStorage.getItem("token")
@@ -112,38 +113,17 @@ const ManagerSettings = () => {
       </div>
 
       <div style={{ borderColor: crm?.theme?.card.border }} className="p-6 m-4 border-2 rounded-lg">
-        <h1 className="text-2xl">Mails</h1>
-        <div className="flex flex-wrap md:flex-nowrap mt-5">
-          <button
-            style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
-            className="px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg">
-            <h1 className="text-xl mb-2 flex items-center gap-2 ">
-              <LayoutTemplate size={25} />
-              Change Templates
-            </h1>
-          </button>
-          <button
-            style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
-            className="px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg">
-            <h1 className="text-xl mb-2 flex items-center gap-2">
-              <Mail size={25} />
-              View Sended Mails
-            </h1>
-          </button>
-        </div>
-      </div>
-
-      <div style={{ borderColor: crm?.theme?.card.border }} className="p-6 m-4 border-2 rounded-lg">
         <h1 className="text-2xl">Support</h1>
-        <div className="flex flex-wrap md:flex-nowrap mt-5">
+        <div className="flex flex-col md:flex-nowrap mt-5">
           <button
             style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
-            className="px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg">
-            <h1 className="text-xl mb-2 flex items-center gap-2 ">
+            className="px-4 py-3 m-2 rounded-lg hover:opacity-95 shadow-lg text-center">
+            <h1 className="text-xl justify-center mb-2 flex items-center gap-2 ">
               <LucideStickyNote size={25} />
               Complaints / Request
             </h1>
           </button>
+          <Complaints crm={crm} />
         </div>
       </div>
 

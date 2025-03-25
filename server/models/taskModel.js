@@ -28,7 +28,7 @@ const taskSchema = new mongoose.Schema({
     },
     crmId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "crm",
+        ref: "crms",
         required: true,
         index: true
     },

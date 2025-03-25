@@ -12,7 +12,7 @@ const noteSchema = new mongoose.Schema({
     },
     crmId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "crm",
+        ref: "crms",
         required: true
     },
 }, { timestamps: true })

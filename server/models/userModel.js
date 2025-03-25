@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     },
     crmId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "crm",
+        ref: "crms",
         default: null
     },
 }, { timestamps: true })
