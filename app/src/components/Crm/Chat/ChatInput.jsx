@@ -39,7 +39,7 @@ const ChatInput = ({ selectedUser, setOnMessageSent }) => {
                 placeholder="Type a message..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full p-2 border rounded-lg text-black bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
                 onClick={handleSendMessage}

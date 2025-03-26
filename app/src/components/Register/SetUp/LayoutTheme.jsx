@@ -93,7 +93,7 @@ const LayoutTheme = () => {
       {/* Navigation Buttons */}
       <div className="mt-6 flex justify-evenly w-full">
         <button onClick={e => dispatch(prevSetupStep())} className="px-6 py-2 bg-gray-600 rounded-lg">Back</button>
-        <button onClick={handleNext} className="px-6 py-2 bg-blue-600 rounded-lg">Submit</button>
+        <button onClick={handleNext} className="px-7 py-3 bg-green-600 rounded-lg">Submit</button>
       </div>
     </div>
   );
