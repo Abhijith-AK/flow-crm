@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { socket } from '../../../App'
 
 const EmployeesTable = ({ search, employees, setView, setUpdate, setFormData }) => {
-    console.log(employees)
+    // console.log(employees)
     const { crm } = useSelector((state) => state.crm);
     const [currentPage, setCurrentPage] = useState(1);
     const [onlineUsers, setOnlineUsers] = useState(null);

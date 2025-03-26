@@ -132,13 +132,13 @@ exports.registerEmployeeController = async (req, res) => {
                             <p><strong>Email:</strong> ${email}</p>
                             <p><strong>Password:</strong> ${password}</p>
                             <div style="text-align: center; margin-top: 15px;">
-                                <a href="https://yourcrm.com/login" style="background: #007BFF; color: #ffffff; padding: 12px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; display: inline-block;">
+                                <a href="http://localhost:5173/login" style="background: #007BFF; color: #ffffff; padding: 12px 20px; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 5px; display: inline-block;">
                                     Login Now
                                 </a>
                             </div>
                         </div>
 
-                        <p style="color: #d9534f; font-size: 14px; font-weight: bold; margin-top: 10px;">For security reasons, please change your password after logging in.</p>
+                        <p style="color: #d9534f; font-size: 14px; font-weight: bold; margin-top: 10px;">Please Don't Share Your Password!.</p>
                     </div>
         
                     <p style="text-align: center; font-size: 14px; color: #333; font-weight: bold; padding-top: 15px;">

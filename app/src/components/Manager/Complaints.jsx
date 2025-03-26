@@ -94,7 +94,7 @@ const Complaints = ({ crm }) => {
                     <motion.div
                         onClick={() => openComplaint(complaint)}
                         style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
-                        key={complaint.id} className="p-4 rounded-lg shadow-md">
+                        key={complaint._id} className="p-4 rounded-lg shadow-md">
                         <h3 className="text-sm font-semibold">Date: {new Date(complaint.createdAt).toLocaleString()}</h3>
                         <p className="">Issue: {complaint.complaint}</p>
                         <p className="flex items-center">Status:

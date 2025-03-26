@@ -11,18 +11,18 @@ import { getEmployees } from '../../redux/slices/employeeSlice'
 
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const employeePerformanceData = [
-  { rank: 1, name: "John Doe", completedTasks: 120, revenue: 50000 },
-  { rank: 2, name: "Jane Smith", completedTasks: 110, revenue: 48000 },
-  { rank: 3, name: "Alice Johnson", completedTasks: 105, revenue: 46000 },
-  { rank: 4, name: "Michael Brown", completedTasks: 100, revenue: 45000 },
-  { rank: 5, name: "Emily White", completedTasks: 95, revenue: 42000 },
-  { rank: 6, name: "David Green", completedTasks: 90, revenue: 40000 },
-  { rank: 7, name: "Sarah Lee", completedTasks: 85, revenue: 38000 },
-  { rank: 8, name: "Chris Wilson", completedTasks: 80, revenue: 35000 },
-  { rank: 9, name: "Emma Taylor", completedTasks: 75, revenue: 33000 },
-  { rank: 10, name: "Daniel Martinez", completedTasks: 70, revenue: 31000 },
-];
+// const employeePerformanceData = [
+//   { rank: 1, name: "John Doe", completedTasks: 120, revenue: 50000 },
+//   { rank: 2, name: "Jane Smith", completedTasks: 110, revenue: 48000 },
+//   { rank: 3, name: "Alice Johnson", completedTasks: 105, revenue: 46000 },
+//   { rank: 4, name: "Michael Brown", completedTasks: 100, revenue: 45000 },
+//   { rank: 5, name: "Emily White", completedTasks: 95, revenue: 42000 },
+//   { rank: 6, name: "David Green", completedTasks: 90, revenue: 40000 },
+//   { rank: 7, name: "Sarah Lee", completedTasks: 85, revenue: 38000 },
+//   { rank: 8, name: "Chris Wilson", completedTasks: 80, revenue: 35000 },
+//   { rank: 9, name: "Emma Taylor", completedTasks: 75, revenue: 33000 },
+//   { rank: 10, name: "Daniel Martinez", completedTasks: 70, revenue: 31000 },
+// ];
 
 // const recentActivities = [
 //   { id: 1, type: "login", user: "John Doe", time: "2 hours ago" },
@@ -40,6 +40,7 @@ const ManagerDasboard = () => {
   const { employees } = useSelector((state) => state.employee);
   const [leadsData, setLeadsData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  let topEmployee;
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getLeads(crm._id))
@@ -65,14 +66,13 @@ const ManagerDasboard = () => {
       setLeadsData(formattedData);
     }
   }, [leads]);
-  const employeePerformanceData = employees
-    .map((employee) => {
+  const employeePerformanceData = employees?.map((employee) => {
       const completedTasks = employee.tasks?.filter(
         (task) => task.status === crm?.workflows[crm?.workflows.length - 1]
       )?.length;
 
       const totalRevenue = leads
-        .filter((lead) => lead.assignedTo._id === employee?._id && lead.status === "won")
+        ?.filter((lead) => lead.assignedTo._id === employee?._id && lead.status === "won")
         .reduce((sum, lead) => sum + Number(lead.revenue || 0), 0);
 
       return {
@@ -83,8 +83,8 @@ const ManagerDasboard = () => {
     })
     .sort((a, b) => b.revenue - a.revenue) // Sort by revenue (highest first)
     .map((employee, index) => ({ ...employee, rank: index + 1 }));
-  const topEmployee = employeePerformanceData[0]
-  console.log(employeePerformanceData, employees, leads);
+  if(employeePerformanceData){  topEmployee = employeePerformanceData[0]}
+  // console.log(employeePerformanceData, employees, leads);
   
   const pieData = [
     { name: "Completed", value: tasks?.filter((value) => value.status == crm?.workflows[crm?.workflows.length - 1])?.length || 0, color: crm?.theme?.text.secondary },
@@ -94,7 +94,7 @@ const ManagerDasboard = () => {
 
   const stats = [
     { title: "Total No of Leads", content: leads?.length || 0, icon: UserCircle },
-    { title: "Tasks", content: tasks?.length || 0, icon: ListTodo },
+    { title: "Tasks", content: tasks?.length - tasks?.filter((value) => value.status == crm?.workflows[crm?.workflows.length - 1])?.length || 0, icon: ListTodo },
     { title: "Total Revenue", content: "₹" + leads?.filter((value) => value.status === "won").reduce((a, b) => a + Number(b.revenue || 0), 0) || 0, icon: Coins },
     { title: "Total Employees", content: employees?.length || 0, icon: Users }
   ]
@@ -161,9 +161,9 @@ const ManagerDasboard = () => {
           <h1 className='text-xl mb-2 text-left'>Team Perfomance</h1>
           <Trophy size={50} className="text-yellow-500 mx-auto mb-3" />
           <h2 className="text-2xl font-bold">🏆 Top Employee</h2>
-          <p className="text-3xl mt-2 font-semibold">{topEmployee.name}</p>
-          <p className="text-lg">Completed Tasks: {topEmployee.completedTasks}</p>
-          <p className="text-lg">Revenue: ₹{topEmployee.revenue.toLocaleString()}</p>
+          <p className="text-3xl mt-2 font-semibold">{topEmployee?.name}</p>
+          <p className="text-lg">Completed Tasks: {topEmployee?.completedTasks}</p>
+          <p className="text-lg">Revenue: ₹{topEmployee?.revenue?.toLocaleString()}</p>
           <button
             style={{ backgroundColor: crm?.theme?.navbar.background, color: crm?.theme?.navbar.text }}
             onClick={() => setIsOpen(true)}

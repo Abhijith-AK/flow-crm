@@ -1,6 +1,6 @@
 import StatCard from "../../utils/common/StatCard"
 import { motion } from "framer-motion"
-import { AlertCircle, CheckCheckIcon, FileWarning, Hourglass, ListTodo, PlusCircle, Trash, Workflow } from "lucide-react"
+import { AlertCircle, CheckCheckIcon, FileWarning, Hourglass, ListTodo, PlusCircle, Workflow } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import KanbanBoard from "../../utils/common/KanbanBoard"
 import DropColumn from "../../utils/common/DropColumn"
@@ -14,7 +14,7 @@ import { getEmployees } from "../../redux/slices/employeeSlice"
 const Tasks = ({ manager }) => {
   const { crm } = useSelector((state) => state.crm)
   const { employees, loading, error } = useSelector((state) => state.employee);
-  const { tasks: taskSet, loading: loadin2, error: error2 } = useSelector((state) => state.task);
+  const { tasks: taskSet, error: error2 } = useSelector((state) => state.task);
   const [tasks, setTasks] = useState({});
   // console.log(tasks)
   const [formData, setFormData] = useState({
@@ -270,7 +270,7 @@ const Tasks = ({ manager }) => {
 
                             {/* Header Section */}
                             <div className="flex justify-between items-center">
-                              <h1 className="text-xl font-semibold truncate">{task.title.slice(0, 20)}</h1>
+                              <p className="text-xl break-words font-semibold truncate w-[100px]">{task.title}</p>
                               <button className="px-2 py-1">
                                 {task.priority === "high" ? (
                                   <span className="flex items-center text-sm gap-2 bg-red-600 text-white px-2 py-1 rounded-lg">
